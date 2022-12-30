@@ -2,7 +2,10 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import ToggleColorScheme from "../components/core/ToggleColorScheme";
 import Layout from "../components/layout/layout";
-import RTE from "../components/RTE";
+const RTE = dynamic(import("../components/RTE"), { ssr: false });
+const DisplayContent = dynamic(import("../components/DisplayContent"), {
+  ssr: false,
+});
 
 export default function IndexPage() {
   return (
@@ -19,6 +22,7 @@ export default function IndexPage() {
           <a href="https://next-auth.js.org">NextAuth.js</a> for authentication.
         </p>
         <RTE />
+        <DisplayContent />
       </Layout>
     </>
   );
