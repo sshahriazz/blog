@@ -17,6 +17,7 @@ import {
   Collapse,
   ScrollArea,
   Menu,
+  Flex,
 } from "@mantine/core";
 // import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
@@ -30,8 +31,9 @@ import {
   IconChevronDown,
   IconExternalLink,
 } from "@tabler/icons";
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import ToggleColorScheme from "../core/ToggleColorScheme";
 import ProfileDropdown from "../ProfileButton";
 
 const useStyles = createStyles((theme) => ({
@@ -142,6 +144,7 @@ const TopNav = () => {
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
   const session = useSession();
+  console.log(session);
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -162,7 +165,7 @@ const TopNav = () => {
   ));
 
   return (
-    <Box pb={120}>
+    <Box>
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
           {/* <MantineLogo size={30} /> */}
@@ -236,11 +239,18 @@ const TopNav = () => {
               Academy
             </a>
           </Group>
+          <ToggleColorScheme />
 
           <Group className={classes.hiddenMobile}>
-            {!session && <Button variant="default">Log in</Button>}
-            {!session && <Button>Sign up</Button>}
-            {session && (
+            {session.status !== "authenticated" && (
+              <Button variant="default" onClick={() => signIn()}>
+                Log in
+              </Button>
+            )}
+            {session.status !== "authenticated" && (
+              <Button onClick={() => signIn()}>Sign up</Button>
+            )}
+            {session.status === "authenticated" && (
               <Menu withArrow>
                 <Menu.Target>
                   <ProfileDropdown image={""} name={""} email={""} />
@@ -311,28 +321,43 @@ const TopNav = () => {
           />
 
           <Group position="center" grow pb="xl" px="md">
-            {!session && <Button variant="default">Log in</Button>}
-            {!session && <Button>Sign up</Button>}
-            {session && (
-              <Menu withArrow>
-                <Menu.Target>
-                  <ProfileDropdown image={""} name={""} email={""} />
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item component={Link} href="/">
-                    Mantine website
-                  </Menu.Item>
+            {session.status !== "authenticated" && (
+              <Button onClick={() => signIn()} variant="default">
+                Log in
+              </Button>
+            )}
+            {session.status !== "authenticated" && (
+              <Button onClick={() => signIn()}>Sign up</Button>
+            )}
+            {session.status === "authenticated" && (
+              <Flex>
+                <Menu withArrow>
+                  <Menu.Target>
+                    <ProfileDropdown image={""} name={""} email={""} />
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item component={Link} href="/">
+                      Mantine website
+                    </Menu.Item>
 
-                  <Menu.Item
-                    icon={<IconExternalLink size={14} />}
-                    component="a"
-                    href="https://mantine.dev"
-                    target="_blank"
-                  >
-                    External link
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
+                    <Menu.Item
+                      icon={<IconExternalLink size={14} />}
+                      component="a"
+                      href="https://mantine.dev"
+                      target="_blank"
+                    >
+                      External link
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+                <Button
+                  variant="subtle"
+                  color="orange"
+                  onClick={() => signIn()}
+                >
+                  Sign up
+                </Button>
+              </Flex>
             )}
           </Group>
         </ScrollArea>

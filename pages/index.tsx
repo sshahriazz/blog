@@ -1,7 +1,11 @@
+import { Stack } from "@mantine/core";
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { ArticleCardVertical } from "../components/blog/article-card";
 import ToggleColorScheme from "../components/core/ToggleColorScheme";
-import Layout from "../components/layout/layout";
+import { FeaturesGrid } from "../components/home/Features";
+import { HeroBullets } from "../components/home/HeroBullets";
+import HomeLayout from "../components/layout/home-layout";
 const RTE = dynamic(import("../components/RTE"), { ssr: false });
 const DisplayContent = dynamic(import("../components/DisplayContent"), {
   ssr: false,
@@ -13,17 +17,15 @@ export default function IndexPage() {
       <Head>
         <title>Home</title>
       </Head>
-      <Layout>
-        <ToggleColorScheme />
-        <h1 className="text-3xl font-bold underline">Hello world!</h1>
-        <h1>NextAuth.js Example</h1>
-        <p>
-          This is an example site to demonstrate how to use{" "}
-          <a href="https://next-auth.js.org">NextAuth.js</a> for authentication.
-        </p>
-        <RTE />
-        <DisplayContent />
-      </Layout>
+      <HomeLayout>
+        <HeroBullets />
+        <FeaturesGrid
+          title={"Integrate effortlessly with any technology stack"}
+          description={
+            "Every once in a while, you’ll see a Golbat that’s missing some fangs. This happens when hunger drives it to try biting a Steel-type Pokémon."
+          }
+        />
+      </HomeLayout>
     </>
   );
 }

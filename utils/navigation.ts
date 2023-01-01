@@ -18,3 +18,25 @@ export const userNavigation = [
   // { name: "Settings", href: "#" },
   { name: "Sign out", href: "/api/auth/signout" },
 ];
+export const links = [
+  {
+    link: "#",
+    label: "Contact",
+  },
+  {
+    link: "#",
+    label: "Privacy",
+  },
+  {
+    link: "#",
+    label: "Blog",
+  },
+  {
+    link: "#",
+    label: "Store",
+  },
+  {
+    link: "#",
+    label: "Careers",
+  },
+];
