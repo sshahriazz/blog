@@ -10,7 +10,6 @@ import { useAtom } from "jotai";
 import dynamic from "next/dynamic";
 import React, { useEffect } from "react";
 import { contentAtom } from "../../store";
-// const RTE = dynamic(() => import("../../components/RTE"), { ssr: false });
 import { useForm } from "@mantine/form";
 import RTE from "../../components/RTE";
 
@@ -48,6 +47,7 @@ const Create = () => {
           label="Save as Draft"
           size="md"
           radius="sm"
+          defaultChecked={form.values.isDraft}
           {...form.getInputProps("isDraft")}
         />
         <Switch
@@ -55,6 +55,7 @@ const Create = () => {
           label="Published"
           size="md"
           radius="sm"
+          defaultChecked={form.values.isPublished}
           {...form.getInputProps("isPublished")}
         />
         <TextInput
