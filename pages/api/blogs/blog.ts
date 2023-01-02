@@ -1,7 +1,7 @@
 import client from "../../../lib/prismadb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
-import { isEmptyObject, isString } from "@tiptap/react";
+import { isEmptyObject } from "@tiptap/react";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +13,11 @@ export default async function handler(
   const token = await getToken({ req });
   const parsedData = body && JSON.parse(body);
   // creates new blog for current user
-  if (token && method === "POST" && isEmptyObject(query)) {
+  if (
+    token &&
+    method === "POST" &&
+    (query.isDraft === undefined || query.isPublished === undefined)
+  ) {
     const blog = await client.blog.create({
       data: {
         title: parsedData.title,

@@ -39,7 +39,7 @@ export default function RTE() {
   }
 
   return (
-    <RichTextEditor editor={editor}>
+    <RichTextEditor editor={editor} sx={{ height: 300 }}>
       <RichTextEditor.Toolbar sticky>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
