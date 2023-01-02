@@ -1,7 +1,6 @@
 import client from "../../../lib/prismadb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
-import { isEmptyObject } from "@tiptap/react";
 
 export default async function handler(
   req: NextApiRequest,
