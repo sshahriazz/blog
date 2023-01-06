@@ -25,7 +25,6 @@ export default async function handler(
         title: true,
       },
     });
-    console.log(allPost);
     return res.send(allPost);
   }
   return res.send({ status: 404, message: "bad request" });

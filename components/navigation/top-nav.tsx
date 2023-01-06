@@ -144,7 +144,6 @@ const TopNav = () => {
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { classes, theme } = useStyles();
   const session = useSession();
-  console.log(session);
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>

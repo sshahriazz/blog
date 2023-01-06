@@ -7,7 +7,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { method, query, body } = req;
-  console.log(method, query, body);
 
   const token = await getToken({ req });
   const parsedData = body && JSON.parse(body);
@@ -17,7 +16,6 @@ export default async function handler(
     method === "POST" &&
     (query.isDraft === undefined || query.isPublished === undefined)
   ) {
-    console.log(parsedData.seo.metaSocial, "meta social");
 
     const blog = await client.blog.create({
       data: {

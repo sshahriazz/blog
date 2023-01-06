@@ -106,7 +106,6 @@ const DropzoneButton = ({
             onDrop={(e) => {
               const imageUrl = URL.createObjectURL(e[0]);
               setFiles(e);
-              console.log(dataLocation, form);
 
               form.setFieldValue(dataLocation, imageUrl);
             }}

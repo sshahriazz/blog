@@ -48,7 +48,6 @@ export default function App(
           cardType: "summary_large_image",
         }}
       />
-      {/* <div dir="ltr"> */}
       <ColorSchemeProvider
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
@@ -65,11 +64,9 @@ export default function App(
           </SessionProvider>
         </MantineProvider>
       </ColorSchemeProvider>
-      {/* </div> */}
     </>
   );
 }
 App.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
-  // get color scheme from cookie
   colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
 });

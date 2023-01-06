@@ -49,7 +49,6 @@ export function ArticleCardVertical({
   author,
 }: BlogUser) {
   const { classes } = useStyles();
-  console.log(coverImage);
 
   return (
     <Card withBorder radius="md" p={0} className={classes.card}>

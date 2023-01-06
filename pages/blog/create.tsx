@@ -101,7 +101,6 @@ const Create = () => {
         body: JSON.stringify(formData),
       });
       const json = await res.json();
-      console.log(json);
     }
   }
   const { classes } = useStyles();
