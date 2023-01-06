@@ -6,17 +6,15 @@ import ToggleColorScheme from "../components/core/ToggleColorScheme";
 import { FeaturesGrid } from "../components/home/Features";
 import { HeroBullets } from "../components/home/HeroBullets";
 import HomeLayout from "../components/layout/home-layout";
-const RTE = dynamic(import("../components/RTE"), { ssr: false });
-const DisplayContent = dynamic(import("../components/DisplayContent"), {
-  ssr: false,
-});
+import { NextSeo } from "next-seo";
 
 export default function IndexPage() {
   return (
     <>
-      <Head>
-        <title>Home</title>
-      </Head>
+      <NextSeo
+        title="Welcome - Home"
+        description="Home page fo the blog site"
+      />
       <HomeLayout>
         <HeroBullets />
         <FeaturesGrid

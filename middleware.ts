@@ -17,4 +17,6 @@ export default withAuth({
   },
 });
 
-export const config = { matcher: ["/me", "/admin", "/api/blog/create"] };
+export const config = {
+  matcher: ["/me", "/admin", "/api/blog/create", "/my-blog"],
+};

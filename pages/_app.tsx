@@ -12,6 +12,7 @@ import { GetServerSidePropsContext } from "next";
 import { Session } from "next-auth";
 import { theme } from "../utils/theme";
 import { RouterTransition } from "../components/RouterTransition";
+import { DefaultSeo } from "next-seo";
 
 export default function App(
   props: AppProps & { colorScheme: ColorScheme; session: Session }
@@ -32,13 +33,21 @@ export default function App(
 
   return (
     <>
-      <Head>
-        <title>App</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
-      </Head>
+      <DefaultSeo
+        title="Blog website"
+        description="Write your blog with ease"
+        openGraph={{
+          type: "website",
+          locale: "en_IE",
+          url: "https://www.localhost:3000/",
+          siteName: "Interactive",
+        }}
+        twitter={{
+          handle: "@interactive",
+          site: "@interactive",
+          cardType: "summary_large_image",
+        }}
+      />
       {/* <div dir="ltr"> */}
       <ColorSchemeProvider
         colorScheme={colorScheme}

@@ -1,4 +1,4 @@
-import { Stack } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 import { Blog } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import { getToken } from "next-auth/jwt";
@@ -10,11 +10,15 @@ import client from "../../lib/prismadb";
 const MyBlogs = ({ data }: { data: Blog[] }) => {
   return (
     <HomeLayout>
-      <Stack spacing={"sm"}>
-        {data.map((dt: Blog) => (
-          <ArticleCardVertical key={dt.title + Math.random()} {...dt} />
-        ))}
-      </Stack>
+      {data.length > 0 ? (
+        <Stack spacing={"sm"}>
+          {data.map((dt: Blog) => (
+            <ArticleCardVertical key={dt.title + Math.random()} {...dt} />
+          ))}
+        </Stack>
+      ) : (
+        <Text>You have no blogs</Text>
+      )}
     </HomeLayout>
   );
 };
@@ -24,14 +28,20 @@ export const getServerSideProps: GetServerSideProps<{
   const { req } = ctx;
   const token = await getToken({ req });
 
-  const data = await client.blog.findMany({
-    where: { authorId: token?.sub! },
-  });
-
-  return {
-    props: {
-      data,
-    },
-  };
+  if (token) {
+    const data = await client.blog.findMany({
+      where: { authorId: token?.sub! },
+    });
+    return {
+      props: {
+        data: data,
+      },
+    };
+  } else
+    return {
+      props: {
+        data: [],
+      },
+    };
 };
 export default MyBlogs;

@@ -1,4 +1,13 @@
-import { createStyles, Card, Image, Avatar, Text, Group } from "@mantine/core";
+import {
+  createStyles,
+  Card,
+  Image,
+  Avatar,
+  Text,
+  Group,
+  Badge,
+  Button,
+} from "@mantine/core";
 import { Blog } from "@prisma/client";
 import Link from "next/link";
 import { BlogUser } from "../../pages/blog";
@@ -14,6 +23,17 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     lineHeight: 1.2,
   },
+  rating: {
+    position: "absolute",
+    top: theme.spacing.xs,
+    right: theme.spacing.xs + 2,
+    pointerEvents: "none",
+  },
+  edit: {
+    position: "absolute",
+    bottom: theme.spacing.xs,
+    right: theme.spacing.xs + 2,
+  },
 
   body: {
     padding: theme.spacing.md,
@@ -24,14 +44,34 @@ export function ArticleCardVertical({
   coverImage,
   title,
   id,
+  isDraft,
+  isPublished,
   author,
-}: // date,
-BlogUser) {
+}: BlogUser) {
   const { classes } = useStyles();
   console.log(coverImage);
 
   return (
     <Card withBorder radius="md" p={0} className={classes.card}>
+      {isPublished && !author && (
+        <Badge
+          className={classes.rating}
+          variant="gradient"
+          gradient={{ from: "green", to: "cyan" }}
+        >
+          published
+        </Badge>
+      )}
+      {isDraft && !author && (
+        <Badge
+          className={classes.rating}
+          variant="gradient"
+          gradient={{ from: "yellow", to: "red" }}
+        >
+          Draft
+        </Badge>
+      )}
+
       <Group noWrap spacing={0}>
         <Image src={coverImage} height={140} alt="test" width={140} />
         <div className={classes.body}>
@@ -65,6 +105,11 @@ BlogUser) {
           </Group>
         </div>
       </Group>
+      {!author && (
+        <Button className={classes.edit} component={Link} href={"/my-blog"}>
+          Edit Blog
+        </Button>
+      )}
     </Card>
   );
 }

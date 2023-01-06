@@ -27,6 +27,7 @@ import DropzoneButton from "../../components/common/dropzone";
 import { FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import { randomId } from "@mantine/hooks";
 import { IconTrash } from "@tabler/icons";
+import PreviewContent from "../../components/PreviewContent";
 const useStyles = createStyles((theme) => ({
   wrapper: {
     paddingTop: theme.spacing.xl * 2,
@@ -133,7 +134,7 @@ const Create = () => {
         onClose={() => setShowPreview((value) => !value)}
       >
         <p>{form.values.title}</p>
-        <DisplayContent />
+        <PreviewContent />
       </Modal>
 
       <Flex justify={"space-between"}>
