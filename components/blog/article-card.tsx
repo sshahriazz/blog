@@ -1,4 +1,7 @@
 import { createStyles, Card, Image, Avatar, Text, Group } from "@mantine/core";
+import { Blog } from "@prisma/client";
+import Link from "next/link";
+import { BlogUser } from "../../pages/blog";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -17,46 +20,47 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface ArticleCardVerticalProps {
-  image: string;
-  category: string;
-  title: string;
-  date: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
-}
-
 export function ArticleCardVertical({
-  image,
-  category,
+  coverImage,
   title,
-  date,
+  id,
   author,
-}: ArticleCardVerticalProps) {
+}: // date,
+BlogUser) {
   const { classes } = useStyles();
+  console.log(coverImage);
+
   return (
     <Card withBorder radius="md" p={0} className={classes.card}>
       <Group noWrap spacing={0}>
-        <Image src={image} height={140} width={140} />
+        <Image src={coverImage} height={140} alt="test" width={140} />
         <div className={classes.body}>
           <Text transform="uppercase" color="dimmed" weight={700} size="xs">
-            {category}
+            {/* {category} */}Category
           </Text>
-          <Text className={classes.title} mt="xs" mb="md">
+          <Text
+            component={Link}
+            href={`/blog/${id}`}
+            className={classes.title}
+            mt="xs"
+            mb="md"
+          >
             {title}
           </Text>
           <Group noWrap spacing="xs">
-            <Group spacing="xs" noWrap>
-              <Avatar size={20} src={author.avatar} />
-              <Text size="xs">{author.name}</Text>
-            </Group>
+            {author && (
+              <Group spacing="xs" noWrap>
+                <Avatar size={20} src={author?.image} />
+                <Text size="xs">{author?.name}</Text>
+              </Group>
+            )}
+            {author && (
+              <Text size="xs" color="dimmed">
+                •
+              </Text>
+            )}
             <Text size="xs" color="dimmed">
-              •
-            </Text>
-            <Text size="xs" color="dimmed">
-              {date}
+              {/* {date} */}2022
             </Text>
           </Group>
         </div>

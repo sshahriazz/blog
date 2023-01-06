@@ -77,7 +77,7 @@ model Seo {
     metaDescription String
     metaImage       String
     metaSocial      MetaSocial[]
-    keywords        String
+    keywords        String[]
     structuredData  Json
     metaRobots      String
     metaViewPort    String
@@ -91,12 +91,7 @@ model MetaSocial {
     title         String
     description   String
     image         String
-    socialNetwork socialNetwork @default(facebook)
+    socialNetwork String
     Seo           Seo?          @relation(fields: [seoId], references: [id], onDelete: Cascade)
     seoId         String?       @db.ObjectId
-}
-
-enum socialNetwork {
-    facebook
-    twitter
 }

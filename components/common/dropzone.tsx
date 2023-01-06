@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Text,
   Group,
@@ -6,6 +6,8 @@ import {
   createStyles,
   Image,
   SimpleGrid,
+  Stack,
+  Box,
 } from "@mantine/core";
 import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import { IconCloudUpload, IconX, IconDownload } from "@tabler/icons";
@@ -13,7 +15,8 @@ import { IconCloudUpload, IconX, IconDownload } from "@tabler/icons";
 const useStyles = createStyles((theme) => ({
   wrapper: {
     position: "relative",
-    marginBottom: 30,
+    marginBottom: 10,
+    marginTop: 10
   },
 
   dropzone: {
@@ -42,89 +45,124 @@ const DropzoneButton = ({
   message,
   maxSize,
   mimeTypes,
+  form,
+  dataLocation,
+  previewSize,
 }: {
   description: string;
   fileType: string;
   message: string;
   maxSize: number;
   mimeTypes: string[];
+  form: any;
+  dataLocation: string;
+  previewSize: { height: number | string; width: number | string };
 }) => {
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const { classes, theme } = useStyles();
+  const [showDropzone, setShowDropzone] = useState(true);
   const openRef = useRef<() => void>(null);
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
     return (
-      <Image
-        alt="crap"
-        key={index}
-        src={imageUrl}
-        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
-      />
+      <Stack key={index}>
+        <Image
+          fit="cover"
+          alt="crap"
+          width={previewSize.width}
+          height={previewSize.height}
+          src={imageUrl}
+          imageProps={{
+            onLoad: () => {
+              URL.revokeObjectURL(imageUrl);
+            },
+          }}
+        />
+        <Button
+          onClick={() => {
+            setFiles([]);
+            setShowDropzone(true);
+          }}
+        >
+          Remove
+        </Button>
+      </Stack>
     );
   });
 
+  useEffect(() => {
+    if (previews.length > 0) {
+      setShowDropzone(false);
+    }
+  }, [previews]);
+
   return (
     <div className={classes.wrapper}>
-      <SimpleGrid
-        cols={4}
-        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
-        mt={previews.length > 0 ? "xl" : 0}
-      >
-        {previews}
-      </SimpleGrid>
-      <Dropzone
-        openRef={openRef}
-        onDrop={setFiles}
-        className={classes.dropzone}
-        radius="md"
-        accept={mimeTypes}
-        maxSize={maxSize}
-      >
-        <div style={{ pointerEvents: "none" }}>
-          <Group position="center">
-            <Dropzone.Accept>
-              <IconDownload
-                size={50}
-                color={theme.colors[theme.primaryColor][6]}
-                stroke={1.5}
-              />
-            </Dropzone.Accept>
-            <Dropzone.Reject>
-              <IconX size={50} color={theme.colors.red[6]} stroke={1.5} />
-            </Dropzone.Reject>
-            <Dropzone.Idle>
-              <IconCloudUpload
-                size={50}
-                color={
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[0]
-                    : theme.black
-                }
-                stroke={1.5}
-              />
-            </Dropzone.Idle>
-          </Group>
+      {!showDropzone && <Box>{previews}</Box>}
+      {showDropzone && (
+        <>
+          <Dropzone
+            openRef={openRef}
+            onDrop={(e) => {
+              const imageUrl = URL.createObjectURL(e[0]);
+              setFiles(e);
+              console.log(dataLocation, form);
 
-          <Text align="center" weight={700} size="lg" mt="xl">
-            <Dropzone.Accept>Drop files here</Dropzone.Accept>
-            <Dropzone.Reject>{fileType} file less than 30mb</Dropzone.Reject>
-            <Dropzone.Idle>Upload {message}</Dropzone.Idle>
-          </Text>
-          <Text align="center" size="sm" mt="xs" color="dimmed">
-            {description}
-          </Text>
-        </div>
-      </Dropzone>
+              form.setFieldValue(dataLocation, imageUrl);
+            }}
+            className={classes.dropzone}
+            radius="md"
+            accept={mimeTypes}
+            maxSize={maxSize}
+          >
+            <div style={{ pointerEvents: "none" }}>
+              <Group position="center">
+                <Dropzone.Accept>
+                  <IconDownload
+                    size={50}
+                    color={theme.colors[theme.primaryColor][6]}
+                    stroke={1.5}
+                  />
+                </Dropzone.Accept>
+                <Dropzone.Reject>
+                  <IconX size={50} color={theme.colors.red[6]} stroke={1.5} />
+                </Dropzone.Reject>
+                <Dropzone.Idle>
+                  <IconCloudUpload
+                    size={50}
+                    color={
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[0]
+                        : theme.black
+                    }
+                    stroke={1.5}
+                  />
+                </Dropzone.Idle>
+              </Group>
 
-      <Button
-        className={classes.control}
-        size="md"
-        radius="xl"
-        onClick={() => openRef.current?.()}
-      >
-        Select files
-      </Button>
+              <Text align="center" weight={700} size="lg" mt="xl">
+                <Dropzone.Accept>Drop files here</Dropzone.Accept>
+                <Dropzone.Reject>
+                  {fileType} file less than 30mb
+                </Dropzone.Reject>
+                <Dropzone.Idle>Upload {message}</Dropzone.Idle>
+              </Text>
+              <Text align="center" size="sm" mt="xs" color="dimmed">
+                {description}
+              </Text>
+            </div>
+          </Dropzone>
+
+          {/* <Button
+            className={classes.control}
+            size="md"
+            radius="xl"
+            onClick={() => openRef.current?.()}
+          >
+            Select files
+          </Button> */}
+        </>
+      )}
     </div>
   );
 };

@@ -17,12 +17,30 @@ export default async function handler(
     method === "POST" &&
     (query.isDraft === undefined || query.isPublished === undefined)
   ) {
+    console.log(parsedData.seo.metaSocial, "meta social");
+
     const blog = await client.blog.create({
       data: {
         title: parsedData.title,
         content: parsedData.content,
         isDraft: parsedData.isDraft,
         isPublished: parsedData.isPublished,
+        coverImage: parsedData.image,
+        seo: {
+          create: {
+            keywords: parsedData.seo.keywords,
+            canonicalURL: parsedData.seo.canonicalURL,
+            metaDescription: parsedData.seo.metaDescription,
+            metaImage: parsedData.seo.metaImage,
+            metaRobots: parsedData.seo.metaRobots,
+            metaTitle: parsedData.seo.metaTitle,
+            metaViewPort: parsedData.seo.metaViewPort,
+            structuredData: parsedData.seo.structuredData || {},
+            metaSocial: {
+              create: parsedData.seo.metaSocial,
+            },
+          },
+        },
         author: { connect: { email: token?.email?.toString() } },
       },
     });
@@ -57,5 +75,6 @@ export default async function handler(
     });
     return res.send(blog);
   }
+
   return res.send({ status: 404, message: "bad request" });
 }
