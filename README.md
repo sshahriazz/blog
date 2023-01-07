@@ -1,3 +1,12 @@
+# Getting started
+
+1. `yarn install or npm install or pnpm install` to install dependency
+2. `yarn dev` for starting in dev mode
+3. `yarn build` for building production
+4. `yarn start` for starting form production build
+
+* base url: `https://localhost:3000`
+
 ## TODO
 
 ### Create
