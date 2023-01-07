@@ -8,7 +8,6 @@ import {
   Badge,
   Button,
 } from "@mantine/core";
-import { Blog } from "@prisma/client";
 import Link from "next/link";
 import { BlogUser } from "../../pages/blog";
 
@@ -105,7 +104,11 @@ export function ArticleCardVertical({
         </div>
       </Group>
       {!author && (
-        <Button className={classes.edit} component={Link} href={"/my-blog"}>
+        <Button
+          className={classes.edit}
+          component={Link}
+          href={`/blog/edit/${id}`}
+        >
           Edit Blog
         </Button>
       )}

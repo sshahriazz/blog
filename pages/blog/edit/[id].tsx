@@ -16,16 +16,19 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { useAtom } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "@mantine/form";
-import { FileWithPath, MIME_TYPES } from "@mantine/dropzone";
-
+import { MIME_TYPES } from "@mantine/dropzone";
 import { IconTrash } from "@tabler/icons";
 import PreviewContent from "@components/PreviewContent";
-import { contentAtom } from "@store/index";
 import DropzoneButton from "@components/common/dropzone";
-import RTE from "@components/RTE";
+import { GetServerSideProps } from "next";
+import client from "@lib/prismadb";
+import { Blog, MetaSocial, Seo } from "@prisma/client";
+import EditRTE from "@components/EditRTE";
+import { useAtom } from "jotai";
+import { contentAtom } from "@store/index";
+
 const useStyles = createStyles((theme) => ({
   wrapper: {
     paddingTop: theme.spacing.xl * 2,
@@ -46,36 +49,34 @@ const useStyles = createStyles((theme) => ({
     }`,
   },
 }));
-
-const Page = () => {
-  const [content] = useAtom(contentAtom);
+type BlogType = Blog & {
+  seo:
+    | (Seo & {
+        metaSocial: MetaSocial[];
+      })
+    | null;
+};
+const Page = ({ data }: { data: BlogType }) => {
   const [showPreview, setShowPreview] = useState(false);
-  const [data, setData] = useState([]);
+  const [updatedContent] = useAtom(contentAtom);
 
   const form = useForm({
     initialValues: {
-      title: "",
-      image: "",
-      content: "",
-      isDraft: true,
-      isPublished: false,
+      title: data.title,
+      image: data.coverImage,
+      content: data.content.toString(),
+      isDraft: data.isDraft,
+      isPublished: data.isPublished,
       seo: {
-        metaTitle: "",
-        metaDescription: "",
-        metaImage: "",
-        metaSocial: [
-          {
-            title: "",
-            description: "",
-            image: "",
-            socialNetwork: "",
-          },
-        ],
-        keywords: [],
-        structuredData: {},
-        metaRobots: "",
-        metaViewPort: "",
-        canonicalURL: "",
+        metaTitle: data.seo?.metaTitle || "",
+        metaDescription: data.seo?.metaDescription || "",
+        metaImage: data.seo?.metaImage || "",
+        metaSocial: data.seo?.metaSocial || [],
+        keywords: data.seo?.keywords || [""],
+        structuredData: data.seo?.structuredData || {},
+        metaRobots: data.seo?.metaRobots || "",
+        metaViewPort: data.seo?.metaViewPort || "",
+        canonicalURL: data.seo?.canonicalURL || "",
       },
     },
     validateInputOnChange: true,
@@ -83,22 +84,24 @@ const Page = () => {
       title: (value) => (value.length <= 1 ? "Required" : null),
     },
   });
+
   useEffect(() => {
-    form.setFieldValue("content", content);
+    form.setFieldValue("content", updatedContent);
     form.setFieldValue("isPublished", form.values.isDraft ? false : false);
     // form.setFieldValue("isDraft", !form.values.isPublished ? true : false);
-  }, [content]);
+  }, [updatedContent]);
 
   async function createBlog() {
     const error = form.validate();
 
     if (!error.hasErrors) {
       const formData = form.values;
-      const res = await fetch("/api/blogs/blog", {
+      const res = await fetch(`/api/blogs/update?id=${data.id}`, {
         method: "POST",
         body: JSON.stringify(formData),
       });
       const json = await res.json();
+      console.log(json);
     }
   }
   const { classes } = useStyles();
@@ -119,10 +122,6 @@ const Page = () => {
   const scrollToTop = () =>
     viewport.current!.scrollTo({ top: 0, behavior: "smooth" });
 
-  // const socials = ["Facebook", "Twitter", "Instagram", "Pinterest"];
-  const [bannerFiles, setBannerFiles] = useState<FileWithPath[]>([]);
-
-  // form.setFieldValue("seo.metaSocial.{1}.metaImage", "hello");
   return (
     <Container size={"xl"}>
       <Modal
@@ -160,7 +159,8 @@ const Page = () => {
           <Button onClick={() => setShowPreview((value) => !value)}>
             Preview Blog
           </Button>
-          <Button onClick={createBlog}>Create Blog</Button>
+          <Button onClick={createBlog}>Update Blog</Button>
+          <Button>Delete Blog</Button>
         </Flex>
       </Flex>
       <Flex gap={"md"}>
@@ -189,11 +189,7 @@ const Page = () => {
             placeholder="Content"
             {...form.getInputProps("content")}
           />
-          <RTE />
-
-          {/* <Group position="right" mt="md">
-            <Button onClick={createBlog}>Submit</Button>
-          </Group> */}
+          <EditRTE content={form.values.content} />
         </Box>
         <ScrollArea
           style={{ height: "90vh" }}
@@ -322,7 +318,7 @@ const Page = () => {
             />
             <MultiSelect
               label="Keywords"
-              data={form.values.seo.keywords}
+              data={form.values.seo.keywords!}
               placeholder="add keywords"
               searchable
               creatable
@@ -356,3 +352,40 @@ const Page = () => {
 };
 
 export default Page;
+export const getServerSideProps: GetServerSideProps<{
+  data: any;
+}> = async (ctx) => {
+  const { params } = ctx;
+
+  if (params?.id) {
+    const data = await client.blog.findUnique({
+      where: { id: params?.id as string },
+      include: {
+        seo: {
+          include: {
+            metaSocial: {
+              select: {
+                title: true,
+                description: true,
+                image: true,
+                socialNetwork: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return {
+      props: {
+        data,
+      },
+    };
+  } else {
+    return {
+      props: {
+        data: {},
+      },
+    };
+  }
+};

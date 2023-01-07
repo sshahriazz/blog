@@ -16,7 +16,6 @@ export default async function handler(
     method === "POST" &&
     (query.isDraft === undefined || query.isPublished === undefined)
   ) {
-
     const blog = await client.blog.create({
       data: {
         title: parsedData.title,
@@ -42,6 +41,7 @@ export default async function handler(
         author: { connect: { email: token?.email?.toString() } },
       },
     });
+
     return res.send(blog);
   }
   if (token && method === "POST" && query?.isDraft && query?.isPublished) {
@@ -58,6 +58,7 @@ export default async function handler(
         isDraft: query.isDraft === "true" ? true : false,
       },
     });
+
     return res.send(blog);
   }
   // update published status of a unique blog
@@ -71,6 +72,7 @@ export default async function handler(
         isPublished: query.isPublished === "true" ? true : false,
       },
     });
+
     return res.send(blog);
   }
 

@@ -32,16 +32,18 @@ export const getServerSideProps: GetServerSideProps<{
     const data = await client.blog.findMany({
       where: { authorId: token?.sub! },
     });
+
     return {
       props: {
-        data: data,
+        data,
       },
     };
-  } else
+  } else {
     return {
       props: {
         data: [],
       },
     };
+  }
 };
 export default MyBlogs;
