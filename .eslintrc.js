@@ -4,10 +4,10 @@ module.exports = {
     "plugin:prettier/recommended",
     "next/core-web-vitals",
     "plugin:react-hooks/recommended",
-    "plugin:mdx/recommended",
   ],
   plugins: ["unused-imports", "prettier", "react-hooks"],
   rules: {
+    "react-hooks/exhaustive-deps": "warn",
     "prettier/prettier": [
       "error",
       {
@@ -17,7 +17,6 @@ module.exports = {
     ],
     "@next/next/no-html-link-for-pages": "off",
     "react/display-name": "off",
-    "react-hooks/exhaustive-deps": "error",
     eqeqeq: ["error", "always"],
     "prefer-const": "error",
     "object-shorthand": ["error", "always"],
@@ -40,9 +39,9 @@ module.exports = {
     ],
   },
   settings: {
-    "mdx/code-blocks": true,
+    // "mdx/code-blocks": true,
     // optional, if you want to disable language mapper, set it to `false`
     // if you want to override the default language mapper inside, you can provide your own
-    "mdx/language-mapper": {},
+    // "mdx/language-mapper": {},
   },
 };

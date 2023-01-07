@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Card,
   createStyles,
   Grid,
   Image,
@@ -9,7 +8,6 @@ import {
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
-import { Blog } from "@prisma/client";
 import {
   IconCalendarStats,
   IconDeviceDesktopAnalytics,
@@ -20,10 +18,8 @@ import {
   IconUser,
   TablerIcon,
 } from "@tabler/icons";
-import { useAtom } from "jotai";
 import { GetStaticProps } from "next";
 import React, { useState } from "react";
-import TableOfContentsFloating from "../../components/blog/table-of-content";
 import DisplayContent from "../../components/DisplayContent";
 import Layout from "../../components/layout/home-layout";
 import UserInfoCard from "../../components/user/UserInfoCard";
@@ -99,6 +95,7 @@ interface NavbarLinkProps {
 }
 function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
+
   return (
     <Tooltip label={label} position="right" transitionDuration={0}>
       <UnstyledButton
@@ -120,6 +117,7 @@ const SingleBlog = ({ post }: { post: any }) => {
       onClick={() => setActive(index)}
     />
   ));
+
   return (
     <Layout>
       <Grid grow gutter="xs">
@@ -152,7 +150,7 @@ const SingleBlog = ({ post }: { post: any }) => {
 export async function getStaticPaths() {
   const posts = await client.blog.findMany();
   const newPath = [];
-  for (let post of posts) {
+  for (const post of posts) {
     newPath.push({ params: { id: post.id } });
   }
 

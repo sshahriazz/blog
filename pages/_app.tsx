@@ -1,6 +1,5 @@
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-import Head from "next/head";
 import {
   ColorScheme,
   ColorSchemeProvider,
@@ -9,10 +8,10 @@ import {
 import { useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSidePropsContext } from "next";
-import { Session } from "next-auth";
 import { theme } from "../utils/theme";
 import { RouterTransition } from "../components/RouterTransition";
 import { DefaultSeo } from "next-seo";
+import { Session } from "next-auth";
 
 export default function App(
   props: AppProps & { colorScheme: ColorScheme; session: Session }
@@ -56,7 +55,7 @@ export default function App(
           withGlobalStyles
           withNormalizeCSS
           withCSSVariables
-          theme={{ ...theme, colorScheme: colorScheme }}
+          theme={{ ...theme, colorScheme }}
         >
           <RouterTransition />
           <SessionProvider session={session}>

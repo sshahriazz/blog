@@ -6,11 +6,7 @@ import TwitterProvider from "next-auth/providers/twitter";
 import Auth0Provider from "next-auth/providers/auth0";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prismadb";
-// import AppleProvider from "next-auth/providers/apple";
-// import EmailProvider from "next-auth/providers/email";
 
-// For more information on each option (and a full list of options) go to
-// https://next-auth.js.org/configuration/options
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
@@ -19,15 +15,7 @@ export const authOptions: NextAuthOptions = {
     updateAge: 24 * 60 * 60,
   },
   secret: process.env.NEXTAUTH_SECRET,
-  // https://next-auth.js.org/configuration/providers/oauth
   providers: [
-    // EmailProvider({
-    //   server: process.env.EMAIL_SERVER,
-    //   from: process.env.EMAIL_FROM,
-    // }),
-    // Temporarily removing the Apple provider from the demo site as the
-    // callback URL for it needs updating due to Vercel changing domains
-
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID,
       clientSecret: process.env.FACEBOOK_SECRET,
@@ -56,6 +44,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token }) {
       token.userRole = "admin";
+
       return { ...token };
     },
   },

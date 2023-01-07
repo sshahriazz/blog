@@ -17,15 +17,12 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useAtom } from "jotai";
-import dynamic from "next/dynamic";
 import React, { useEffect, useRef, useState } from "react";
 import { contentAtom } from "../../store";
 import { useForm } from "@mantine/form";
 import RTE from "../../components/RTE";
-import DisplayContent from "../../components/DisplayContent";
 import DropzoneButton from "../../components/common/dropzone";
 import { FileWithPath, MIME_TYPES } from "@mantine/dropzone";
-import { randomId } from "@mantine/hooks";
 import { IconTrash } from "@tabler/icons";
 import PreviewContent from "../../components/PreviewContent";
 const useStyles = createStyles((theme) => ({
@@ -123,6 +120,7 @@ const Create = () => {
 
   // const socials = ["Facebook", "Twitter", "Instagram", "Pinterest"];
   const [bannerFiles, setBannerFiles] = useState<FileWithPath[]>([]);
+
   // form.setFieldValue("seo.metaSocial.{1}.metaImage", "hello");
   return (
     <Container size={"xl"}>
@@ -188,7 +186,6 @@ const Create = () => {
             hidden
             label="Content"
             placeholder="Content"
-            value={content}
             {...form.getInputProps("content")}
           />
           <RTE />
