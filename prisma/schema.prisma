@@ -43,6 +43,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     blogs         Blog[]
+    comments      Comment[]
     followedBy    User[]    @relation("UserFollows", fields: [followedByIDs], references: [id])
     followedByIDs String[]  @db.ObjectId
     following     User[]    @relation("UserFollows", fields: [followingIDs], references: [id])
@@ -57,8 +58,41 @@ model Blog {
     content     String
     isDraft     Boolean @default(true)
     isPublished Boolean @default(false)
-    author      User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    authorId    String? @db.ObjectId
+
+    category Category?
+    tags     Tags[]
+
+    author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    authorId String? @db.ObjectId
+}
+
+model Comment {
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    comment String
+
+    Children  Comment[] @relation("Comment_Children")
+    parent    Comment?  @relation("Comment_Children", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    parent_id String?   @db.ObjectId
+
+    author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    authorId String? @db.ObjectId
+}
+
+model Category {
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String
+
+    blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+    blogId String @unique @db.ObjectId
+}
+
+model Tags {
+    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String
+    Blog        Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+    blogId      String? @db.ObjectId
 }
 
 model VerificationToken {
@@ -87,11 +121,11 @@ model Seo {
 }
 
 model MetaSocial {
-    id            String        @id @default(auto()) @map("_id") @db.ObjectId
+    id            String  @id @default(auto()) @map("_id") @db.ObjectId
     title         String
     description   String
     image         String
     socialNetwork String
-    Seo           Seo?          @relation(fields: [seoId], references: [id], onDelete: Cascade)
-    seoId         String?       @db.ObjectId
+    Seo           Seo?    @relation(fields: [seoId], references: [id], onDelete: Cascade)
+    seoId         String? @db.ObjectId
 }
