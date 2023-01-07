@@ -62,6 +62,8 @@ model Blog {
     category Category?
     tags     Tags[]
 
+    comments Comment[]
+
     author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId String? @db.ObjectId
 }
@@ -76,6 +78,9 @@ model Comment {
 
     author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId String? @db.ObjectId
+
+    blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+    blogId String? @db.ObjectId
 }
 
 model Category {
