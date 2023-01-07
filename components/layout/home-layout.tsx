@@ -6,7 +6,7 @@ import { Container } from "@mantine/core";
 
 export default function HomeLayout({ children }: { children: ReactNode }) {
   return (
-    <Container>
+    <Container size={"xl"}>
       <TopNav />
       <main className="h-full">{children}</main>
       <Footer links={links} />
