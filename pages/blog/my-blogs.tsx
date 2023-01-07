@@ -1,5 +1,6 @@
 import { Stack, Text } from "@mantine/core";
 import { Blog } from "@prisma/client";
+import { serialize } from "@utils/prisma";
 import { GetServerSideProps } from "next";
 import { getToken } from "next-auth/jwt";
 import React from "react";
@@ -35,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<{
 
     return {
       props: {
-        data,
+        data: serialize(data),
       },
     };
   } else {

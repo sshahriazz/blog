@@ -1,7 +1,8 @@
-import { Button, ScrollArea, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { Blog, User } from "@prisma/client";
+import { serialize } from "@utils/prisma";
 import { GetServerSideProps } from "next";
-import React, { Context, useState } from "react";
+import React from "react";
 import { ArticleCardVertical } from "../../components/blog/article-card";
 import Layout from "../../components/layout/home-layout";
 import client from "../../lib/prismadb";
@@ -26,11 +27,14 @@ export const getServerSideProps: GetServerSideProps<{
   const data = await client.blog.findMany({
     where: { isPublished: true },
     include: { author: true },
+    orderBy: {
+      createdAt: "asc",
+    },
   });
 
   return {
     props: {
-      data,
+      data: serialize(data),
     },
   };
 };

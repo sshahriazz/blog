@@ -5,3 +5,6 @@ export function exclude(data: any, keys: string[]) {
 
   return data;
 }
+export function serialize(data: any) {
+  return JSON.parse(JSON.stringify(data));
+}

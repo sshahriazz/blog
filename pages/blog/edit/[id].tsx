@@ -28,6 +28,7 @@ import { Blog, MetaSocial, Seo } from "@prisma/client";
 import EditRTE from "@components/EditRTE";
 import { useAtom } from "jotai";
 import { contentAtom } from "@store/index";
+import { serialize } from "@utils/prisma";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -378,7 +379,7 @@ export const getServerSideProps: GetServerSideProps<{
 
     return {
       props: {
-        data,
+        data: serialize(data),
       },
     };
   } else {

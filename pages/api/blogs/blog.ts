@@ -23,6 +23,20 @@ export default async function handler(
         isDraft: parsedData.isDraft,
         isPublished: parsedData.isPublished,
         coverImage: parsedData.image,
+        category: {
+          create: {
+            name: "Technology",
+            description: "t description",
+          },
+        },
+        tags: {
+          createMany: {
+            data: [
+              { name: "name", description: "desc" },
+              { name: "name2", description: "desc" },
+            ],
+          },
+        },
         seo: {
           create: {
             keywords: parsedData.seo.keywords,

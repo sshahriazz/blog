@@ -121,10 +121,8 @@ const SingleBlog = ({ post }: { post: any }) => {
   return (
     <Layout>
       <Grid grow gutter="xs">
-        <Grid.Col span={1}>
-          <Stack justify="end" spacing={0}>
-            {links}
-          </Stack>
+        <Grid.Col span="content">
+          <Stack spacing={0}>{links}</Stack>
         </Grid.Col>
         <Grid.Col span={8}>
           <Image
