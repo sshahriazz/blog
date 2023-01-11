@@ -11,6 +11,7 @@ import {
   Button,
   createStyles,
   Divider,
+  Loader,
   Paper,
   Stack,
   Text,
@@ -18,9 +19,11 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { IconCheck, IconX } from "@tabler/icons";
 import { CtxOrReq } from "next-auth/client/_utils";
 import { getCsrfToken, getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -128,6 +131,31 @@ export default function SignIn({
       });
     }
   };
+  const [loading, setLoading] = useState(false);
+  const [valid, setValid] = useState(false);
+  const handleUserNameValidation = async () => {
+    setLoading(true);
+    const validate = form.validate();
+    console.log(validate);
+
+    if (validate.hasErrors === false) {
+      await fetch("/api/auth/username", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: form.values.username,
+        }),
+      }).then((res) => {
+        if (res.status === 200) {
+          setValid(true);
+          setLoading(false);
+        } else {
+          setValid(false);
+          setLoading(false);
+        }
+      });
+    }
+  };
 
   return (
     <Box className={classes.wrapper}>
@@ -144,6 +172,16 @@ export default function SignIn({
 
         <TextInput
           {...form.getInputProps("username")}
+          onBlur={handleUserNameValidation}
+          rightSection={
+            loading ? (
+              <Loader size="xs" />
+            ) : valid ? (
+              <IconCheck fill="green.1" />
+            ) : (
+              <IconX fill="blue.0" />
+            )
+          }
           label="Username"
           placeholder="Username"
           size="md"
