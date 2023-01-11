@@ -6,6 +6,8 @@ import TwitterProvider from "next-auth/providers/twitter";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prismadb";
 import CredentialsProvider from "next-auth/providers/credentials";
+import client from "../../../lib/prismadb";
+import { compare } from "bcryptjs";
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -28,22 +30,35 @@ export const authOptions = {
           placeholder: "********",
         },
       },
-      async authorize(credentials) {
-        // we have access to res object here
-        console.log(credentials);
+      async authorize(credentials, req) {
+        //Connect to DB
 
-        // Add logic here to look up the user from the credentials supplied
-        const user = { id: "1", name: "J Smith", email: "jsmith@example.com" };
+        //Get all the users
+        const result = await client.user.findUnique({
+          where: { email: credentials?.email },
+        });
+        //Find user with the email
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        //Not found - send error res
+        if (!result) {
+          throw new Error("No user found with the email");
         }
+        //Check hased password with DB password
+        const checkPassword = await compare(
+          credentials?.password as string,
+          result.password!
+        );
+        //Incorrect password - send response
+        if (!checkPassword) {
+          throw new Error("Password does not match");
+        }
+        //Else send success response
+
+        return {
+          id: result.id,
+          username: result.username,
+          email: result.email,
+        };
       },
     }),
     FacebookProvider({
