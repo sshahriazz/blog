@@ -9,8 +9,8 @@ import {
   Anchor,
   Box,
   Button,
-  Checkbox,
   createStyles,
+  Divider,
   Paper,
   Stack,
   Text,
@@ -24,7 +24,7 @@ import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    minHeight: 900,
+    minHeight: "100vh",
     backgroundSize: "cover",
     backgroundImage:
       "url(https://images.unsplash.com/photo-1484242857719-4b9144542727?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80)",
@@ -34,7 +34,7 @@ const useStyles = createStyles((theme) => ({
     borderRight: `1px solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[3]
     }`,
-    minHeight: 900,
+    minHeight: "100vh",
     maxWidth: 450,
     paddingTop: 80,
 
@@ -156,7 +156,7 @@ export default function SignIn({
         />
         <PasswordStrength form={form} />
 
-        <Checkbox label="Keep me logged in" mt="xl" size="md" />
+        {/* <Checkbox label="Keep me logged in" mt="xl" size="md" /> */}
         <Button onClick={handleSignup} fullWidth mt="xl" size="md">
           Sign Up
         </Button>
@@ -167,6 +167,11 @@ export default function SignIn({
             Login
           </Anchor>
         </Text>
+        <Divider
+          label="Or continue with OAuth"
+          labelPosition="center"
+          my="md"
+        />
         <Stack mb="md" mt="md">
           {Object.values(providers).map(
             (provider) =>

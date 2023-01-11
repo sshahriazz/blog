@@ -248,7 +248,9 @@ const TopNav = () => {
               </Button>
             )}
             {session.status !== "authenticated" && (
-              <Button onClick={() => signIn()}>Sign up</Button>
+              <Button component={Link} href="/auth/signup">
+                Sign up
+              </Button>
             )}
             {session.status === "authenticated" && (
               <Menu withArrow>
