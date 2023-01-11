@@ -3,7 +3,6 @@ import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
-import Auth0Provider from "next-auth/providers/auth0";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../../lib/prismadb";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -18,12 +17,8 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Credentials",
-      // `credentials` is used to generate a form on the sign in page.
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
+
       credentials: {
         email: { label: "Username", type: "email", placeholder: "jsmith" },
         username: { label: "Username", type: "text", placeholder: "username" },
@@ -62,15 +57,18 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     TwitterProvider({
       clientId: process.env.TWITTER_ID,
       clientSecret: process.env.TWITTER_SECRET,
-    }),
-    Auth0Provider({
-      clientId: process.env.AUTH0_ID,
-      clientSecret: process.env.AUTH0_SECRET,
-      issuer: process.env.AUTH0_ISSUER,
+      version: "2.0",
     }),
   ],
   theme: {
@@ -82,6 +80,13 @@ export const authOptions = {
 
       return { ...token };
     },
+  },
+  pages: {
+    signIn: "/auth/signin",
+    signOut: "/auth/signout",
+    error: "/auth/signin/error",
+    verifyRequest: "/auth/verify-request", // (used for check email message)
+    newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };
 // @ts-ignore

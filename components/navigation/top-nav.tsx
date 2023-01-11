@@ -19,6 +19,7 @@ import {
   Menu,
   Flex,
 } from "@mantine/core";
+import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconNotification,
@@ -30,7 +31,7 @@ import {
   IconChevronDown,
   IconExternalLink,
 } from "@tabler/icons";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import ToggleColorScheme from "../core/ToggleColorScheme";
 import ProfileDropdown from "../ProfileButton";
@@ -166,7 +167,7 @@ const TopNav = () => {
     <Box>
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
-          {/* <MantineLogo size={30} /> */}
+          <MantineLogo size={30} />
 
           <Group
             sx={{ height: "100%" }}
@@ -237,9 +238,10 @@ const TopNav = () => {
               Academy
             </a>
           </Group>
-          <ToggleColorScheme />
 
-          <Group className={classes.hiddenMobile}>
+          <Flex className={classes.hiddenMobile} gap={"sm"} align="center">
+            <ToggleColorScheme />
+
             {session.status !== "authenticated" && (
               <Button variant="default" onClick={() => signIn()}>
                 Log in
@@ -251,25 +253,27 @@ const TopNav = () => {
             {session.status === "authenticated" && (
               <Menu withArrow>
                 <Menu.Target>
-                  <ProfileDropdown image={""} name={""} email={""} />
+                  <ProfileDropdown
+                    image={""}
+                    name={"Polash"}
+                    email={"shahriaz@g.com"}
+                  />
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item component={Link} href="/">
-                    Mantine website
-                  </Menu.Item>
+                  <Menu.Item onClick={() => signOut()}>Log out</Menu.Item>
 
                   <Menu.Item
                     icon={<IconExternalLink size={14} />}
-                    component="a"
-                    href="https://mantine.dev"
+                    component={Link}
+                    href="/"
                     target="_blank"
                   >
-                    External link
+                    Home
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
             )}
-          </Group>
+          </Flex>
 
           <Burger
             opened={drawerOpened}
@@ -294,9 +298,9 @@ const TopNav = () => {
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
 
-          <a href="#" className={classes.link}>
+          <Link href="/" className={classes.link}>
             Home
-          </a>
+          </Link>
           <UnstyledButton className={classes.link} onClick={toggleLinks}>
             <Center inline>
               <Box component="span" mr={5}>
