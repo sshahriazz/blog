@@ -68,6 +68,7 @@ const useStyles = createStyles((theme) => ({
 
 export function HeroBullets() {
   const { classes } = useStyles();
+
   return (
     <div>
       <Container>

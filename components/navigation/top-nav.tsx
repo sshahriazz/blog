@@ -19,7 +19,6 @@ import {
   Menu,
   Flex,
 } from "@mantine/core";
-// import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconNotification,
@@ -31,7 +30,7 @@ import {
   IconChevronDown,
   IconExternalLink,
 } from "@tabler/icons";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import ToggleColorScheme from "../core/ToggleColorScheme";
 import ProfileDropdown from "../ProfileButton";

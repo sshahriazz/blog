@@ -1,11 +1,4 @@
-import {
-  Navbar,
-  Group,
-  Code,
-  ScrollArea,
-  createStyles,
-  Box,
-} from "@mantine/core";
+import { Navbar, ScrollArea, createStyles, Box } from "@mantine/core";
 import {
   IconNotes,
   IconCalendarStats,
@@ -15,11 +8,7 @@ import {
   IconAdjustments,
   IconLock,
 } from "@tabler/icons";
-import UserAvatar from "../UserAvatar";
 import { LinksGroup } from "./links-group";
-// import { UserButton } from "../UserButton/UserButton";
-// import { LinksGroup } from "../NavbarLinksGroup/NavbarLinksGroup";
-// import { Logo } from "./Logo";
 
 const mockdata = [
   { label: "Dashboard", icon: IconGauge },

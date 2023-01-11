@@ -7,7 +7,7 @@ module.exports = {
   ],
   plugins: ["unused-imports", "prettier", "react-hooks"],
   rules: {
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": 0,
     "prettier/prettier": [
       "error",
       {
@@ -29,7 +29,7 @@ module.exports = {
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
-      "warn",
+      0,
       {
         vars: "all",
         varsIgnorePattern: "^_",

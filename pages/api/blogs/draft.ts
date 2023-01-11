@@ -26,7 +26,9 @@ export default async function handler(
         title: true,
       },
     });
+
     return res.send(draftPost);
   }
+
   return res.send({ status: 404, message: "bad request" });
 }

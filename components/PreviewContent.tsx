@@ -10,10 +10,11 @@ const PreviewContent = () => {
 
   const editor = useEditor({
     editable: false,
-    content: content,
+    content,
     extensions: [StarterKit],
   });
   useEffect(() => {}, [content]);
+
   return (
     <RichTextEditor editor={editor}>
       <RichTextEditor.Content />

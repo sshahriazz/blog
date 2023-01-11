@@ -6,9 +6,10 @@ import React from "react";
 const DisplayContent = ({ content }: { content: any }) => {
   const editor = useEditor({
     editable: false,
-    content: content,
+    content,
     extensions: [StarterKit],
   });
+
   return (
     <RichTextEditor editor={editor}>
       <RichTextEditor.Content />

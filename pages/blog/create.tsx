@@ -22,7 +22,7 @@ import { contentAtom } from "../../store";
 import { useForm } from "@mantine/form";
 import RTE from "../../components/RTE";
 import DropzoneButton from "../../components/common/dropzone";
-import { FileWithPath, MIME_TYPES } from "@mantine/dropzone";
+import { MIME_TYPES } from "@mantine/dropzone";
 import { IconTrash } from "@tabler/icons";
 import PreviewContent from "../../components/PreviewContent";
 const useStyles = createStyles((theme) => ({
@@ -49,7 +49,6 @@ const useStyles = createStyles((theme) => ({
 const Create = () => {
   const [content] = useAtom(contentAtom);
   const [showPreview, setShowPreview] = useState(false);
-  const [data, setData] = useState([]);
 
   const form = useForm({
     initialValues: {
@@ -93,11 +92,10 @@ const Create = () => {
 
     if (!error.hasErrors) {
       const formData = form.values;
-      const res = await fetch("/api/blogs/blog", {
+      await fetch("/api/blogs/blog", {
         method: "POST",
         body: JSON.stringify(formData),
       });
-      const json = await res.json();
     }
   }
   const { classes } = useStyles();
@@ -118,10 +116,6 @@ const Create = () => {
   const scrollToTop = () =>
     viewport.current!.scrollTo({ top: 0, behavior: "smooth" });
 
-  // const socials = ["Facebook", "Twitter", "Instagram", "Pinterest"];
-  const [bannerFiles, setBannerFiles] = useState<FileWithPath[]>([]);
-
-  // form.setFieldValue("seo.metaSocial.{1}.metaImage", "hello");
   return (
     <Container size={"xl"}>
       <Modal

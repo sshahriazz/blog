@@ -1,8 +1,3 @@
-import { Stack } from "@mantine/core";
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import { ArticleCardVertical } from "../components/blog/article-card";
-import ToggleColorScheme from "../components/core/ToggleColorScheme";
 import { FeaturesGrid } from "../components/home/Features";
 import { HeroBullets } from "../components/home/HeroBullets";
 import HomeLayout from "../components/layout/home-layout";

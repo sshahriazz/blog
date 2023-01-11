@@ -57,6 +57,7 @@ interface FeatureProps {
 
 export function Feature({ icon: Icon, title, description }: FeatureProps) {
   const theme = useMantineTheme();
+
   return (
     <div>
       <ThemeIcon variant="light" size={40} radius={40}>

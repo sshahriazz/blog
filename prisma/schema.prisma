@@ -48,6 +48,8 @@ model User {
     followedByIDs String[]  @db.ObjectId
     following     User[]    @relation("UserFollows", fields: [followingIDs], references: [id])
     followingIDs  String[]  @db.ObjectId
+    password      String?
+    username      String?   @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

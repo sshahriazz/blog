@@ -18,6 +18,7 @@ import {
   IconUser,
   TablerIcon,
 } from "@tabler/icons";
+import { serialize } from "@utils/prisma";
 import { GetStaticProps } from "next";
 import React, { useState } from "react";
 import DisplayContent from "../../components/DisplayContent";
@@ -97,7 +98,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
 
   return (
-    <Tooltip label={label} position="right" transitionDuration={0}>
+    <Tooltip label={label} position="right" transitionDuration={200}>
       <UnstyledButton
         onClick={onClick}
         className={cx(classes.link, { [classes.active]: active })}
@@ -176,7 +177,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   });
 
   return {
-    props: { post },
+    props: { post: serialize(post) },
   };
 };
 export default SingleBlog;

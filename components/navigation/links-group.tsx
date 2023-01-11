@@ -8,12 +8,7 @@ import {
   UnstyledButton,
   createStyles,
 } from "@mantine/core";
-import {
-  TablerIcon,
-  IconCalendarStats,
-  IconChevronLeft,
-  IconChevronRight,
-} from "@tabler/icons";
+import { TablerIcon, IconChevronLeft, IconChevronRight } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => ({
   control: {

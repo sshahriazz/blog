@@ -5,18 +5,17 @@ import {
   Button,
   createStyles,
   Image,
-  SimpleGrid,
   Stack,
   Box,
 } from "@mantine/core";
-import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
+import { Dropzone, FileWithPath } from "@mantine/dropzone";
 import { IconCloudUpload, IconX, IconDownload } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
     position: "relative",
     marginBottom: 10,
-    marginTop: 10
+    marginTop: 10,
   },
 
   dropzone: {
@@ -64,6 +63,7 @@ const DropzoneButton = ({
   const openRef = useRef<() => void>(null);
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
+
     return (
       <Stack key={index}>
         <Image
