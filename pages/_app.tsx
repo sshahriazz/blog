@@ -11,10 +11,9 @@ import { GetServerSidePropsContext } from "next";
 import { theme } from "../utils/theme";
 import { RouterTransition } from "../components/RouterTransition";
 import { DefaultSeo } from "next-seo";
-import { Session } from "next-auth";
 
 export default function App(
-  props: AppProps & { colorScheme: ColorScheme; session: Session }
+  props: AppProps & { colorScheme: ColorScheme; session: any }
 ) {
   const { Component, pageProps, session } = props;
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
