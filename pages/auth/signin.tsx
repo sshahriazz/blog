@@ -143,7 +143,6 @@ export default function SignIn({
             (provider) =>
               provider.name !== "Credentials" && (
                 <Box key={provider.name}>
-                  {/* <Button onClick={() => signIn(provider.id)}> */}
                   {provider.name === "Google" ? (
                     <GoogleButton
                       w={"100%"}

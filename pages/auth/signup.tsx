@@ -17,6 +17,7 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconX } from "@tabler/icons";
@@ -74,7 +75,7 @@ export default function SignIn({
       password: "",
       username: "",
     },
-
+    validateInputOnChange: true,
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
       password: (value) =>
@@ -138,7 +139,7 @@ export default function SignIn({
     const validate = form.validate();
     console.log(validate);
 
-    if (validate.hasErrors === false) {
+    if (!validate.errors.username) {
       await fetch("/api/auth/username", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -175,11 +176,23 @@ export default function SignIn({
           onBlur={handleUserNameValidation}
           rightSection={
             loading ? (
-              <Loader size="xs" />
+              <Tooltip label="Validation check failed, check username">
+                <Box>
+                  <Loader size="xs" />
+                </Box>
+              </Tooltip>
             ) : valid ? (
-              <IconCheck fill="green.1" />
+              <Tooltip label="Username available">
+                <Box>
+                  <IconCheck color="green" />
+                </Box>
+              </Tooltip>
             ) : (
-              <IconX fill="blue.0" />
+              <Tooltip label="Username not available">
+                <Box>
+                  <IconX color="red" />
+                </Box>
+              </Tooltip>
             )
           }
           label="Username"
@@ -187,6 +200,7 @@ export default function SignIn({
           size="md"
         />
         <TextInput
+          mt={"md"}
           {...form.getInputProps("email")}
           label="Email address"
           placeholder="hello@gmail.com"
