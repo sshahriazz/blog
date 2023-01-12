@@ -92,7 +92,7 @@ export function PasswordStrength({ form }: { form: any }) {
         arrowSize={15}
         arrowPosition="side"
         label={
-          <Card>
+          <Card bg={"gray.9"}>
             <PasswordRequirement
               label="Has at least 8 characters"
               meets={value.length > 7}

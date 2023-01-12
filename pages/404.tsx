@@ -56,6 +56,7 @@ export default function NotFoundImage() {
         breakpoints={[{ maxWidth: "sm", cols: 1, spacing: 40 }]}
       >
         <Image
+          alt=""
           src={"https://ui.mantine.dev/_next/static/media/image.11cd6c19.svg"}
           className={classes.mobileImage}
         />
