@@ -8,6 +8,8 @@
 * base url: `https://localhost:3000`
 
 ## TODO
+### Chat GPT
+* add chat GPT to the rich text editor
 
 ### Create
 * add all the fields to create a blog
