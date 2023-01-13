@@ -1,16 +1,27 @@
 import type { AppProps } from "next/app";
-import { SessionProvider } from "next-auth/react";
-import {
-  ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
-} from "@mantine/core";
+import { ColorScheme } from "@mantine/core";
 import { useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSidePropsContext } from "next";
 import { theme } from "../utils/theme";
-import { RouterTransition } from "../components/RouterTransition";
 import { DefaultSeo } from "next-seo";
+import dynamic from "next/dynamic";
+
+const SessionProvider = dynamic(() =>
+  import("next-auth/react").then((mod) => mod.SessionProvider)
+);
+const RouterTransition = dynamic(() =>
+  import("@components/RouterTransition").then((mod) => mod.RouterTransition)
+);
+const NotificationsProvider = dynamic(() =>
+  import("@mantine/notifications").then((mod) => mod.NotificationsProvider)
+);
+const MantineProvider = dynamic(() =>
+  import("@mantine/core").then((mod) => mod.MantineProvider)
+);
+const ColorSchemeProvider = dynamic(() =>
+  import("@mantine/core").then((mod) => mod.ColorSchemeProvider)
+);
 
 export default function App(
   props: AppProps & { colorScheme: ColorScheme; session: any }
@@ -58,7 +69,9 @@ export default function App(
         >
           <RouterTransition />
           <SessionProvider session={session}>
-            <Component {...pageProps} />
+            <NotificationsProvider>
+              <Component {...pageProps} />
+            </NotificationsProvider>
           </SessionProvider>
         </MantineProvider>
       </ColorSchemeProvider>

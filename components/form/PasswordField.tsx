@@ -86,11 +86,11 @@ export function PasswordStrength({ form }: { form: any }) {
     <Box ref={ref} onClick={() => setOpened(!opened ? true : true)}>
       <Tooltip
         opened={opened}
-        offset={50}
-        position="right"
+        // offset={50}
+        position="bottom"
         withArrow
         arrowSize={15}
-        arrowPosition="side"
+        arrowPosition="center"
         label={
           <Card bg={"gray.9"}>
             <PasswordRequirement

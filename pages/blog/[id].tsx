@@ -1,10 +1,15 @@
+import dynamic from "next/dynamic";
+
+const UserInfo = dynamic(() => import("@components/common/user-info"));
+const BlogLayout = dynamic(() => import("@components/layout/blog-layout"));
 import {
-  Avatar,
+  Badge,
   createStyles,
   Grid,
+  Group,
   Image,
   Stack,
-  Text,
+  Title,
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
@@ -18,13 +23,14 @@ import {
   IconUser,
   TablerIcon,
 } from "@tabler/icons";
+
 import { serialize } from "@utils/prisma";
 import { GetStaticProps } from "next";
 import React, { useState } from "react";
-import DisplayContent from "../../components/DisplayContent";
-import Layout from "../../components/layout/home-layout";
-import UserInfoCard from "../../components/user/UserInfoCard";
+const DisplayContent = dynamic(() => import("@components/DisplayContent"));
+const UserInfoCard = dynamic(() => import("@components/user/UserInfoCard"));
 import client from "../../lib/prismadb";
+
 const user = {
   image:
     "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80",
@@ -120,7 +126,7 @@ const SingleBlog = ({ post }: { post: any }) => {
   ));
 
   return (
-    <Layout>
+    <BlogLayout>
       <Grid grow gutter="xs">
         <Grid.Col span="content">
           <Stack spacing={0}>{links}</Stack>
@@ -128,21 +134,31 @@ const SingleBlog = ({ post }: { post: any }) => {
         <Grid.Col span={8}>
           <Image
             radius="md"
+            mb={12}
             height={180}
             src="https://images.unsplash.com/photo-1511216335778-7cb8f49fa7a3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
             alt="Random unsplash image"
           />
-          <Avatar src={post.author.image} alt="it's me" />
-          <Text>{post.author.name}</Text>
-          <Text size={25}>{post?.title}</Text>
-          <Text>Tags - coming soon</Text>
+          <UserInfo
+            email={post.author.email}
+            image={post.author.image}
+            name={post.author.name}
+          />
+
+          <Title order={1}>{post?.title}</Title>
+          <Group mt={8} mb={32}>
+            <Badge>Tags</Badge>
+            <Badge>Tags</Badge>
+            <Badge>Tags</Badge>
+            <Badge>Tags</Badge>
+          </Group>
           <DisplayContent content={post?.content} />
         </Grid.Col>
         <Grid.Col span={3}>
           <UserInfoCard {...user} />
         </Grid.Col>
       </Grid>
-    </Layout>
+    </BlogLayout>
   );
 };
 
@@ -166,6 +182,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       author: {
         select: {
           image: true,
+          email: true,
           name: true,
         },
       },

@@ -8,7 +8,6 @@ import {
   Text,
   SimpleGrid,
   ThemeIcon,
-  Anchor,
   Divider,
   Center,
   Box,
@@ -18,15 +17,14 @@ import {
   ScrollArea,
   Menu,
   Flex,
+  Container,
+  Anchor,
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { useDisclosure } from "@mantine/hooks";
 import {
-  IconNotification,
   IconCode,
   IconBook,
-  IconChartPie3,
-  IconFingerprint,
   IconCoin,
   IconChevronDown,
   IconExternalLink,
@@ -41,12 +39,13 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     height: "100%",
-    paddingLeft: theme.spacing.md,
-    paddingRight: theme.spacing.md,
+    padding: `${theme.spacing.sm}px ${theme.spacing.sm}px`,
     textDecoration: "none",
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    // color: "red",
     fontWeight: 500,
     fontSize: theme.fontSizes.sm,
+    borderRadius: theme.radius.md,
 
     [theme.fn.smallerThan("sm")]: {
       height: 42,
@@ -65,7 +64,7 @@ const useStyles = createStyles((theme) => ({
 
   subLink: {
     width: "100%",
-    padding: `${theme.spacing.xs}px ${theme.spacing.md}px`,
+    padding: `${theme.spacing.md}px ${theme.spacing.lg}px`,
     borderRadius: theme.radius.md,
 
     ...theme.fn.hover({
@@ -108,34 +107,37 @@ const useStyles = createStyles((theme) => ({
 const mockdata = [
   {
     icon: IconCode,
-    title: "Open source",
-    description: "This Pokémon’s cry is very loud and distracting",
+    title: "Blog Post",
+    description: "Browse the latest blog posts",
+    href: "/blog",
   },
   {
     icon: IconCoin,
-    title: "Free for everyone",
-    description: "The fluid of Smeargle’s tail secretions changes",
+    title: "Create Blog",
+    description: "Create a new blog post",
+    href: "/blog/create",
   },
   {
     icon: IconBook,
-    title: "Documentation",
-    description: "Yanma is capable of seeing 360 degrees without",
+    title: "My Blogs",
+    description: "View your blogs",
+    href: "/blog/my-blogs",
   },
-  {
-    icon: IconFingerprint,
-    title: "Security",
-    description: "The shell’s rounded shape and the grooves on its.",
-  },
-  {
-    icon: IconChartPie3,
-    title: "Analytics",
-    description: "This Pokémon uses its flying ability to quickly chase",
-  },
-  {
-    icon: IconNotification,
-    title: "Notifications",
-    description: "Combusken battles with the intensely hot flames it spews",
-  },
+  // {
+  //   icon: IconFingerprint,
+  //   title: "Security",
+  //   description: "The shell’s rounded shape and the grooves on its.",
+  // },
+  // {
+  //   icon: IconChartPie3,
+  //   title: "Analytics",
+  //   description: "This Pokémon uses its flying ability to quickly chase",
+  // },
+  // {
+  //   icon: IconNotification,
+  //   title: "Notifications",
+  //   description: "Combusken battles with the intensely hot flames it spews",
+  // },
 ];
 
 const TopNav = () => {
@@ -146,7 +148,12 @@ const TopNav = () => {
   const session = useSession();
 
   const links = mockdata.map((item) => (
-    <UnstyledButton className={classes.subLink} key={item.title}>
+    <UnstyledButton
+      component={Link}
+      href={item.href}
+      className={classes.subLink}
+      key={item.title}
+    >
       <Group noWrap align="flex-start">
         <ThemeIcon size={34} variant="default" radius="md">
           <item.icon size={22} color={theme.fn.primaryColor()} />
@@ -166,123 +173,125 @@ const TopNav = () => {
   return (
     <Box>
       <Header height={60} px="md">
-        <Group position="apart" sx={{ height: "100%" }}>
-          <MantineLogo size={30} />
+        <Container size={"xl"}>
+          <Group position="apart" sx={{ height: "100%" }}>
+            <MantineLogo size={30} />
 
-          <Group
-            sx={{ height: "100%" }}
-            spacing={0}
-            className={classes.hiddenMobile}
-          >
-            <a href="#" className={classes.link}>
-              Home
-            </a>
-            <HoverCard
-              width={600}
-              position="bottom"
-              radius="md"
-              shadow="md"
-              withinPortal
+            <Group
+              sx={{ height: "100%" }}
+              spacing={0}
+              className={classes.hiddenMobile}
             >
-              <HoverCard.Target>
-                <a href="#" className={classes.link}>
-                  <Center inline>
-                    <Box component="span" mr={5}>
-                      Features
-                    </Box>
-                    <IconChevronDown
-                      size={16}
-                      color={theme.fn.primaryColor()}
-                    />
-                  </Center>
-                </a>
-              </HoverCard.Target>
+              <Link href="/" className={classes.link}>
+                Home
+              </Link>
+              <HoverCard
+                width={600}
+                position="bottom"
+                radius="md"
+                shadow="md"
+                withinPortal
+              >
+                <HoverCard.Target>
+                  <a href="#" className={classes.link}>
+                    <Center inline>
+                      <Box component="span" mr={5}>
+                        Blog
+                      </Box>
+                      <IconChevronDown
+                        size={16}
+                        color={theme.fn.primaryColor()}
+                      />
+                    </Center>
+                  </a>
+                </HoverCard.Target>
 
-              <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
-                <Group position="apart" px="md">
-                  <Text weight={500}>Features</Text>
-                  <Anchor href="#" size="xs">
-                    View all
-                  </Anchor>
-                </Group>
-
-                <Divider
-                  my="sm"
-                  mx="-md"
-                  color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
-                />
-
-                <SimpleGrid cols={2} spacing={0}>
-                  {links}
-                </SimpleGrid>
-
-                <div className={classes.dropdownFooter}>
-                  <Group position="apart">
-                    <div>
-                      <Text weight={500} size="sm">
-                        Get started
-                      </Text>
-                      <Text size="xs" color="dimmed">
-                        Their food sources have decreased, and their numbers
-                      </Text>
-                    </div>
-                    <Button variant="default">Get started</Button>
+                <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
+                  <Group position="apart" px="md">
+                    <Text weight={500}>Blog</Text>
+                    <Anchor href="#" size="xs">
+                      View all
+                    </Anchor>
                   </Group>
-                </div>
-              </HoverCard.Dropdown>
-            </HoverCard>
-            <a href="#" className={classes.link}>
-              Learn
-            </a>
-            <a href="#" className={classes.link}>
-              Academy
-            </a>
-          </Group>
 
-          <Flex className={classes.hiddenMobile} gap={"sm"} align="center">
-            <ToggleColorScheme />
-
-            {session.status !== "authenticated" && (
-              <Button variant="default" onClick={() => signIn()}>
-                Log in
-              </Button>
-            )}
-            {session.status !== "authenticated" && (
-              <Button component={Link} href="/auth/signup">
-                Sign up
-              </Button>
-            )}
-            {session.status === "authenticated" && (
-              <Menu withArrow>
-                <Menu.Target>
-                  <ProfileDropdown
-                    image={""}
-                    name={"Polash"}
-                    email={"shahriaz@g.com"}
+                  <Divider
+                    my="sm"
+                    mx="-md"
+                    color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
                   />
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item onClick={() => signOut()}>Log out</Menu.Item>
 
-                  <Menu.Item
-                    icon={<IconExternalLink size={14} />}
-                    component={Link}
-                    href="/"
-                    target="_blank"
-                  >
-                    Home
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            )}
-          </Flex>
+                  <SimpleGrid cols={2} spacing={0}>
+                    {links}
+                  </SimpleGrid>
 
-          <Burger
-            opened={drawerOpened}
-            onClick={toggleDrawer}
-            className={classes.hiddenDesktop}
-          />
-        </Group>
+                  {/* <div className={classes.dropdownFooter}>
+                    <Group position="apart">
+                      <div>
+                        <Text weight={500} size="sm">
+                          Get started
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          Their food sources have decreased, and their numbers
+                        </Text>
+                      </div>
+                      <Button variant="default">Get started</Button>
+                    </Group>
+                  </div> */}
+                </HoverCard.Dropdown>
+              </HoverCard>
+              <a href="#" className={classes.link}>
+                Learn
+              </a>
+              <a href="#" className={classes.link}>
+                Academy
+              </a>
+            </Group>
+
+            <Flex className={classes.hiddenMobile} gap={"sm"} align="center">
+              <ToggleColorScheme />
+
+              {session.status !== "authenticated" && (
+                <Button variant="default" onClick={() => signIn()}>
+                  Log in
+                </Button>
+              )}
+              {session.status !== "authenticated" && (
+                <Button component={Link} href="/auth/signup">
+                  Sign up
+                </Button>
+              )}
+              {session.status === "authenticated" && (
+                <Menu withArrow>
+                  <Menu.Target>
+                    <ProfileDropdown
+                      image={""}
+                      name={"Polash"}
+                      email={"shahriaz@g.com"}
+                    />
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item onClick={() => signOut()}>Log out</Menu.Item>
+
+                    <Menu.Item
+                      icon={<IconExternalLink size={14} />}
+                      component={Link}
+                      href="/"
+                      target="_blank"
+                    >
+                      Home
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              )}
+            </Flex>
+
+            <Burger
+              opened={drawerOpened}
+              onClick={toggleDrawer}
+              className={classes.hiddenDesktop}
+            />
+          </Group>
+        </Container>
       </Header>
 
       <Drawer

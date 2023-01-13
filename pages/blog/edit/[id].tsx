@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import {
   Accordion,
   ActionIcon,
@@ -8,6 +9,7 @@ import {
   Flex,
   Group,
   JsonInput,
+  Loader,
   Modal,
   MultiSelect,
   ScrollArea,
@@ -16,16 +18,19 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { MIME_TYPES } from "@mantine/dropzone";
 import { IconTrash } from "@tabler/icons";
-import PreviewContent from "@components/PreviewContent";
-import DropzoneButton from "@components/common/dropzone";
+const PreviewContent = dynamic(() => import("@components/PreviewContent"));
+const DropzoneButton = dynamic(() => import("@components/common/dropzone"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
 import { GetServerSideProps } from "next";
 import client from "@lib/prismadb";
 import { Blog, MetaSocial, Seo } from "@prisma/client";
-import EditRTE from "@components/EditRTE";
+const EditRTE = dynamic(() => import("@components/EditRTE"));
 import { useAtom } from "jotai";
 import { contentAtom } from "@store/index";
 import { serialize } from "@utils/prisma";
@@ -86,10 +91,9 @@ const Page = ({ data }: { data: BlogType }) => {
     },
   });
 
-  useEffect(() => {
+  useMemo(() => {
     form.setFieldValue("content", updatedContent);
     form.setFieldValue("isPublished", form.values.isDraft ? false : false);
-    // form.setFieldValue("isDraft", !form.values.isPublished ? true : false);
   }, [updatedContent]);
 
   async function createBlog() {

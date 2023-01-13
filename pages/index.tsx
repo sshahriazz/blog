@@ -1,6 +1,12 @@
-import { FeaturesGrid } from "../components/home/Features";
-import { HeroBullets } from "../components/home/HeroBullets";
-import HomeLayout from "../components/layout/home-layout";
+import dynamic from "next/dynamic";
+const FeaturesGrid = dynamic(() =>
+  import("@components/home/Features").then((mod) => mod.FeaturesGrid)
+);
+const HeroBullets = dynamic(() =>
+  import("@components/home/HeroBullets").then((mod) => mod.HeroBullets)
+);
+const HomeLayout = dynamic(() => import("@components/layout/home-layout"));
+
 import { NextSeo } from "next-seo";
 
 export default function IndexPage() {

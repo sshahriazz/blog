@@ -1,13 +1,14 @@
+import dynamic from "next/dynamic";
 import {
   Accordion,
   ActionIcon,
   Box,
   Button,
-  Container,
   createStyles,
   Flex,
   Group,
   JsonInput,
+  Loader,
   Modal,
   MultiSelect,
   ScrollArea,
@@ -18,13 +19,21 @@ import {
 } from "@mantine/core";
 import { useAtom } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
-import { contentAtom } from "../../store";
+import { contentAtom } from "@store/index";
 import { useForm } from "@mantine/form";
-import RTE from "../../components/RTE";
-import DropzoneButton from "../../components/common/dropzone";
-import { MIME_TYPES } from "@mantine/dropzone";
 import { IconTrash } from "@tabler/icons";
-import PreviewContent from "../../components/PreviewContent";
+import { useRouter } from "next/router";
+import { showNotification } from "@mantine/notifications";
+import { MIME_TYPES } from "@mantine/dropzone";
+
+const RTE = dynamic(() => import("@components/RTE"));
+const DropzoneButton = dynamic(() => import("@components/common/dropzone"), {
+  ssr: false,
+  loading: () => <Loader />,
+});
+const PreviewContent = dynamic(() => import("@components/PreviewContent"));
+const BlogLayout = dynamic(() => import("@components/layout/blog-layout"));
+
 const useStyles = createStyles((theme) => ({
   wrapper: {
     paddingTop: theme.spacing.xl * 2,
@@ -81,10 +90,10 @@ const Create = () => {
       title: (value) => (value.length <= 1 ? "Required" : null),
     },
   });
+  const { push } = useRouter();
   useEffect(() => {
     form.setFieldValue("content", content);
     form.setFieldValue("isPublished", form.values.isDraft ? false : false);
-    // form.setFieldValue("isDraft", !form.values.isPublished ? true : false);
   }, [content]);
 
   async function createBlog() {
@@ -95,6 +104,17 @@ const Create = () => {
       await fetch("/api/blogs/blog", {
         method: "POST",
         body: JSON.stringify(formData),
+      }).then(async (res) => {
+        const data = await res.json();
+
+        if (res.status === 200) {
+          console.log("blog created");
+          push(`/blog/edit/${data?.id}`);
+          showNotification({
+            title: "Blog Created",
+            message: "Your blog has been created successfully",
+          });
+        }
       });
     }
   }
@@ -117,7 +137,7 @@ const Create = () => {
     viewport.current!.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <Container size={"xl"}>
+    <BlogLayout>
       <Modal
         fullScreen
         centered
@@ -344,7 +364,7 @@ const Create = () => {
           </Stack>
         </ScrollArea>
       </Flex>
-    </Container>
+    </BlogLayout>
   );
 };
 

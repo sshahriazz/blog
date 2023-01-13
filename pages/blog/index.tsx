@@ -1,11 +1,14 @@
 import { Stack } from "@mantine/core";
+import dynamic from "next/dynamic";
 import { Blog, User } from "@prisma/client";
 import { serialize } from "@utils/prisma";
 import { GetServerSideProps } from "next";
 import React from "react";
-import { ArticleCardVertical } from "../../components/blog/article-card";
-import Layout from "../../components/layout/home-layout";
-import client from "../../lib/prismadb";
+const ArticleCardVertical = dynamic(() =>
+  import("@components/blog/article-card").then((mod) => mod.ArticleCardVertical)
+);
+const Layout = dynamic(() => import("@components/layout/home-layout"));
+import client from "@lib/prismadb";
 
 export type BlogUser = Blog & {
   author?: User | null;
@@ -36,6 +39,7 @@ export const getServerSideProps: GetServerSideProps<{
     props: {
       data: serialize(data),
     },
+    revalidate: 60 * 60 * 24,
   };
 };
 

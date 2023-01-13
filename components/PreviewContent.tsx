@@ -2,8 +2,8 @@ import { RichTextEditor } from "@mantine/tiptap";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useAtom } from "jotai";
-import React, { useEffect } from "react";
-import { contentAtom } from "../store";
+import React from "react";
+import { contentAtom } from "@store/index";
 
 const PreviewContent = () => {
   const [content] = useAtom(contentAtom);
@@ -13,7 +13,6 @@ const PreviewContent = () => {
     content,
     extensions: [StarterKit],
   });
-  useEffect(() => {}, [content]);
 
   return (
     <RichTextEditor editor={editor}>
@@ -22,4 +21,4 @@ const PreviewContent = () => {
   );
 };
 
-export default PreviewContent;
+export default React.memo(PreviewContent);

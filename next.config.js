@@ -5,6 +5,16 @@ const nextConfig = {
   images: {
     domains: ["avatars.githubusercontent.com"],
   },
+  modularizeImports: {
+    "@mantine/core": {
+      transform: "@mantine/core",
+      skipDefaultConversion: true,
+    },
+    "@tabler/icons": {
+      transform: "@tabler/icons",
+      skipDefaultConversion: true,
+    },
+  },
 };
 
 module.exports = nextConfig;

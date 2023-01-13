@@ -1,4 +1,8 @@
-import { PasswordStrength } from "@components/form/PasswordField";
+import dynamic from "next/dynamic";
+const PasswordStrength = dynamic(() =>
+  import("@components/form/PasswordField").then((mod) => mod.PasswordStrength)
+);
+
 import {
   FacebookButton,
   GithubButton,

@@ -37,16 +37,7 @@
     "source.fixAll.eslint": true
   },
   "eslint.runtime": "node",
-  // "typescript.tsdk": "node_modules/typescript/lib",
-  // "typescript.tsserver.maxTsServerMemory": 8192,
-  // "typescript.tsserver.trace": "verbose",
-  // "typescript.tsserver.useSyntaxServer": "always",
-  // "typescript.tsserver.log": "normal",
-  // "typescript.preferences.importModuleSpecifier": "non-relative",
-  // "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+
   "typescript.workspaceSymbols.scope": "currentProject",
   "editor.tabSize": 2
-  // "[markdown]": {
-  //   "editor.defaultFormatter": "esbenp.prettier-vscode"
-  // }
 }

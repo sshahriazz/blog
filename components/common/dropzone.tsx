@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
   Group,
@@ -97,7 +97,7 @@ const DropzoneButton = ({
   }, [previews]);
 
   return (
-    <div className={classes.wrapper}>
+    <Box className={classes.wrapper}>
       {!showDropzone && <Box>{previews}</Box>}
       {showDropzone && (
         <>
@@ -151,18 +151,9 @@ const DropzoneButton = ({
               </Text>
             </div>
           </Dropzone>
-
-          {/* <Button
-            className={classes.control}
-            size="md"
-            radius="xl"
-            onClick={() => openRef.current?.()}
-          >
-            Select files
-          </Button> */}
         </>
       )}
-    </div>
+    </Box>
   );
 };
-export default DropzoneButton;
+export default React.memo(DropzoneButton);

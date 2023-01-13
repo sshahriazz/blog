@@ -1,12 +1,17 @@
+import dynamic from "next/dynamic";
+import React from "react";
+
 import { Stack, Text } from "@mantine/core";
 import { Blog } from "@prisma/client";
 import { serialize } from "@utils/prisma";
 import { GetServerSideProps } from "next";
 import { getToken } from "next-auth/jwt";
-import React from "react";
-import { ArticleCardVertical } from "../../components/blog/article-card";
-import HomeLayout from "../../components/layout/home-layout";
 import client from "../../lib/prismadb";
+
+const ArticleCardVertical = dynamic(() =>
+  import("@components/blog/article-card").then((mod) => mod.ArticleCardVertical)
+);
+const HomeLayout = dynamic(() => import("@components/layout/home-layout"));
 
 const MyBlogs = ({ data }: { data: Blog[] }) => {
   return (

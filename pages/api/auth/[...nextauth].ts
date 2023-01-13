@@ -91,7 +91,12 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token }: any) {
-      token.userRole = "admin";
+      const user = await client.user.findUnique({
+        where: { email: token.email },
+      });
+      if (user) {
+        token.userRole = user?.role;
+      }
 
       return { ...token };
     },
@@ -100,8 +105,8 @@ export const authOptions = {
     signIn: "/auth/signin",
     signOut: "/auth/signout",
     error: "/auth/signin/error",
-    verifyRequest: "/auth/verify-request", // (used for check email message)
-    newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
+    // verifyRequest: "/auth/verify-request", // (used for check email message)
+    // newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };
 // @ts-ignore

@@ -1,10 +1,28 @@
-import { PasswordStrength } from "@components/form/PasswordField";
-import {
-  FacebookButton,
-  GithubButton,
-  GoogleButton,
-  TwitterButton,
-} from "@components/social-button/SocialButton";
+import dynamic from "next/dynamic";
+const PasswordStrength = dynamic(() =>
+  import("@components/form/PasswordField").then((mod) => mod.PasswordStrength)
+);
+
+const FacebookButton = dynamic(() =>
+  import("@components/social-button/SocialButton").then(
+    (mod) => mod.FacebookButton
+  )
+);
+const GithubButton = dynamic(() =>
+  import("@components/social-button/SocialButton").then(
+    (mod) => mod.GithubButton
+  )
+);
+const GoogleButton = dynamic(() =>
+  import("@components/social-button/SocialButton").then(
+    (mod) => mod.GoogleButton
+  )
+);
+const TwitterButton = dynamic(() =>
+  import("@components/social-button/SocialButton").then(
+    (mod) => mod.TwitterButton
+  )
+);
 import {
   Anchor,
   Box,
