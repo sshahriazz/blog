@@ -16,6 +16,10 @@ export default async function handler(
     method === "POST" &&
     (query.isDraft === undefined || query.isPublished === undefined)
   ) {
+    await client.tag.deleteMany({
+      where: { name: { in: parsedData.tags.map((t: any) => t.name) } },
+    });
+
     const blog = await client.blog.create({
       data: {
         title: parsedData.title,
@@ -24,16 +28,13 @@ export default async function handler(
         isPublished: parsedData.isPublished,
         coverImage: parsedData.image,
         category: {
-          create: {
-            name: "Technology",
-            description: "t description",
-          },
+          create: parsedData.category,
         },
         tags: {
           createMany: {
             data: [
-              { name: "name", description: "desc" },
-              { name: "name2", description: "desc" },
+              { description: "what ever", name: "test" },
+              { description: "what ever2", name: "test2" },
             ],
           },
         },

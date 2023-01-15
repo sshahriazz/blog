@@ -11,23 +11,9 @@ export default async function handler(
   const token = await getToken({ req });
 
   if (token && method === "GET") {
-    const draftPost = await client.blog.findMany({
-      where: { isDraft: true },
-      select: {
-        author: {
-          select: {
-            id: true,
-            image: true,
-            name: true,
-          },
-        },
-        coverImage: true,
-        id: true,
-        title: true,
-      },
-    });
+    const blogCategory = await client.category.findMany();
 
-    return res.send(draftPost);
+    return res.send(blogCategory);
   }
 
   return res.send({ status: 404, message: "bad request" });

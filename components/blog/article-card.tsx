@@ -8,9 +8,12 @@ import {
   Badge,
   Button,
 } from "@mantine/core";
+import { Blog, User } from "@prisma/client";
 import Link from "next/link";
-import { BlogUser } from "../../pages/blog";
 
+type BlogUser = Blog & {
+  author?: User | null | undefined;
+};
 const useStyles = createStyles((theme) => ({
   card: {
     backgroundColor:
