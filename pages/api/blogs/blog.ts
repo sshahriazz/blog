@@ -28,7 +28,13 @@ export default async function handler(
         isPublished: parsedData.isPublished,
         coverImage: parsedData.image,
         category: {
-          create: parsedData.category,
+          connectOrCreate: {
+            where: { name: parsedData.category.name },
+            create: {
+              name: parsedData.category,
+              description: parsedData.category.description,
+            },
+          },
         },
         tags: {
           createMany: {
@@ -36,6 +42,7 @@ export default async function handler(
               { description: "what ever", name: "test" },
               { description: "what ever2", name: "test2" },
             ],
+            skipDuplicates: true,
           },
         },
         seo: {

@@ -1,5 +1,5 @@
 datasource db {
-    provider = "mongodb"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -8,8 +8,8 @@ generator client {
 }
 
 model Account {
-    id                String  @id @default(auto()) @map("_id") @db.ObjectId
-    userId            String  @db.ObjectId
+    id                String  @id @default(cuid())
+    userId            String
     type              String
     provider          String
     providerAccountId String
@@ -27,15 +27,15 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    id           String   @id @default(cuid())
     sessionToken String   @unique
-    userId       String   @db.ObjectId
+    userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
+    id String @id @default(cuid())
 
     identifier String
     token      String   @unique
@@ -45,33 +45,42 @@ model VerificationToken {
 }
 
 model User {
-    id            String     @id @default(auto()) @map("_id") @db.ObjectId
+    id            String    @id @default(cuid())
     name          String?
-    email         String?    @unique
+    email         String?   @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
     blogs         Blog[]
     comments      Comment[]
-    followedBy    User[]     @relation("UserFollows", fields: [followedByIDs], references: [id])
-    followedByIDs String[]   @db.ObjectId
-    following     User[]     @relation("UserFollows", fields: [followingIDs], references: [id])
-    followingIDs  String[]   @db.ObjectId
-    password      String?
-    username      String?    @unique
-    role          Role       @default(USER)
-    portfolio     Portfolio?
+
+    followedBy Follows[] @relation("following")
+    following  Follows[] @relation("follower")
+
+    password  String?
+    username  String?    @unique
+    role      Role       @default(USER)
+    portfolio Portfolio?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
+model Follows {
+    follower    User   @relation("follower", fields: [followerId], references: [id])
+    followerId  String
+    following   User   @relation("following", fields: [followingId], references: [id])
+    followingId String
+
+    @@id([followerId, followingId])
+}
+
 model Portfolio {
-    id     String @id @default(auto()) @map("_id") @db.ObjectId
+    id     String @id @default(cuid())
     data   Json   @default("{}")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId String @unique @db.ObjectId
+    userId String @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -83,7 +92,7 @@ enum Role {
 }
 
 model Blog {
-    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    id          String  @id @default(cuid())
     seo         Seo?
     title       String
     coverImage  String?
@@ -97,55 +106,55 @@ model Blog {
     comments Comment[]
 
     author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    authorId String? @db.ObjectId
+    authorId String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Comment {
-    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    id      String @id @default(cuid())
     comment String
 
     children Comment[] @relation("Comment_Children")
     parent   Comment?  @relation("Comment_Children", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    parentId String?   @db.ObjectId
+    parentId String?
 
     author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-    authorId String? @db.ObjectId
+    authorId String?
 
     blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId String? @db.ObjectId
+    blogId String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Category {
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    id          String @id @default(cuid())
     name        String @unique
     description String
 
     blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId String @unique @db.ObjectId
+    blogId String @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Tag {
-    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    id          String  @id @default(cuid()) 
     name        String  @unique
     description String
     Blog        Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId      String? @db.ObjectId
+    blogId      String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Seo {
-    id              String       @id @default(auto()) @map("_id") @db.ObjectId
+    id              String       @id @default(cuid())
     metaTitle       String
     metaDescription String
     metaImage       String
@@ -156,20 +165,20 @@ model Seo {
     metaViewPort    String
     canonicalURL    String
     blog            Blog         @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId          String       @unique @db.ObjectId
+    blogId          String       @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model MetaSocial {
-    id            String  @id @default(auto()) @map("_id") @db.ObjectId
+    id            String  @id @default(cuid())
     title         String
     description   String
     image         String
     socialNetwork String
     Seo           Seo?    @relation(fields: [seoId], references: [id], onDelete: Cascade)
-    seoId         String? @db.ObjectId
+    seoId         String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
