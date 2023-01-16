@@ -6,25 +6,25 @@ import {
   Button,
   createStyles,
   Flex,
-  Group,
   JsonInput,
   Loader,
   Modal,
   MultiSelect,
   ScrollArea,
   Stack,
-  Switch,
   Text,
   TextInput,
+  Select,
 } from "@mantine/core";
 import { useAtom } from "jotai";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { contentAtom } from "@store/index";
 import { useForm } from "@mantine/form";
 import { IconTrash } from "@tabler/icons";
 import { useRouter } from "next/router";
 import { showNotification } from "@mantine/notifications";
 import { MIME_TYPES } from "@mantine/dropzone";
+import client from "@lib/prismadb";
 
 const RTE = dynamic(() => import("@components/RTE"));
 const DropzoneButton = dynamic(() => import("@components/common/dropzone"), {
@@ -55,9 +55,10 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Create = () => {
+const Create = (props: any) => {
   const [content] = useAtom(contentAtom);
   const [showPreview, setShowPreview] = useState(false);
+  const [data, setData] = useState(props.tags || []);
 
   const form = useForm({
     initialValues: {
@@ -66,6 +67,8 @@ const Create = () => {
       content: "",
       isDraft: true,
       isPublished: false,
+      tags: [""],
+      category: "",
       seo: {
         metaTitle: "",
         metaDescription: "",
@@ -91,28 +94,46 @@ const Create = () => {
     },
   });
   const { push } = useRouter();
-  useEffect(() => {
+  useMemo(() => {
     form.setFieldValue("content", content);
-    form.setFieldValue("isPublished", form.values.isDraft ? false : false);
   }, [content]);
 
-  async function createBlog() {
+  async function publishBlog() {
+    form.setFieldValue("isPublished", true);
+    form.setFieldValue("isDraft", false);
     const error = form.validate();
 
     if (!error.hasErrors) {
-      const formData = form.values;
       await fetch("/api/blogs/blog", {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(form.values),
       }).then(async (res) => {
-        const data = await res.json();
-
         if (res.status === 200) {
           console.log("blog created");
-          push(`/blog/edit/${data?.id}`);
+          push(`/blog/my-blogs`);
           showNotification({
             title: "Blog Created",
-            message: "Your blog has been created successfully",
+            message: "Your blog has been created and published successfully",
+          });
+        }
+      });
+    }
+  }
+  async function createDraftBlog() {
+    const error = form.validate();
+    form.setFieldValue("isPublished", false);
+    form.setFieldValue("isDraft", true);
+    if (!error.hasErrors) {
+      await fetch("/api/blogs/blog", {
+        method: "POST",
+        body: JSON.stringify(form.values),
+      }).then(async (res) => {
+        if (res.status === 200) {
+          console.log("blog created");
+          push(`/blog/my-blogs`);
+          showNotification({
+            title: "Blog Created",
+            message: "Your blog has been created as draft",
           });
         }
       });
@@ -120,21 +141,6 @@ const Create = () => {
   }
   const { classes } = useStyles();
   const viewport = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () =>
-    viewport.current!.scrollTo({
-      top: viewport.current!.scrollHeight,
-      behavior: "smooth",
-    });
-
-  const scrollToCenter = () =>
-    viewport.current!.scrollTo({
-      top: viewport.current!.scrollHeight / 2,
-      behavior: "smooth",
-    });
-
-  const scrollToTop = () =>
-    viewport.current!.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <BlogLayout>
@@ -148,32 +154,13 @@ const Create = () => {
         <PreviewContent />
       </Modal>
 
-      <Flex justify={"space-between"}>
-        <Flex>
-          <Switch
-            labelPosition="left"
-            label="Keep it as draft"
-            size="md"
-            radius="sm"
-            disabled={form.values.isPublished}
-            defaultChecked={form.values.isDraft}
-            {...form.getInputProps("isDraft")}
-          />
-          <Switch
-            labelPosition="left"
-            disabled={form.values.isDraft}
-            label="Publish Blog"
-            size="md"
-            radius="sm"
-            defaultChecked={form.values.isPublished}
-            {...form.getInputProps("isPublished")}
-          />
-        </Flex>
+      <Flex justify={"end"}>
         <Flex gap={"md"}>
           <Button onClick={() => setShowPreview((value) => !value)}>
             Preview Blog
           </Button>
-          <Button onClick={createBlog}>Create Blog</Button>
+          <Button onClick={publishBlog}>Publish Blog</Button>
+          <Button onClick={createDraftBlog}>Create Draft</Button>
         </Flex>
       </Flex>
       <Flex gap={"md"}>
@@ -195,6 +182,30 @@ const Create = () => {
             placeholder="Title"
             {...form.getInputProps("title")}
           />
+          <Select
+            label="Category"
+            searchable
+            clearable
+            placeholder="Pick one"
+            {...form.getInputProps("category")}
+            data={props?.categories || []}
+          />
+          <MultiSelect
+            searchable
+            clearable
+            {...form.getInputProps("tags")}
+            data={data || []}
+            label="Tags"
+            placeholder="Pick one or more"
+            creatable
+            getCreateLabel={(query) => `+ Create ${query}`}
+            onCreate={(query) => {
+              const item = { value: query, label: query };
+              setData((current: any) => [...current, item]);
+
+              return item;
+            }}
+          />
           <TextInput
             withAsterisk
             hidden
@@ -203,10 +214,6 @@ const Create = () => {
             {...form.getInputProps("content")}
           />
           <RTE />
-
-          {/* <Group position="right" mt="md">
-            <Button onClick={createBlog}>Submit</Button>
-          </Group> */}
         </Box>
         <ScrollArea
           style={{ height: "90vh" }}
@@ -350,17 +357,6 @@ const Create = () => {
               formatOnBlur
               minRows={4}
             />
-            <Group position="center">
-              <Button onClick={scrollToBottom} variant="outline">
-                Scroll to bottom
-              </Button>
-              <Button onClick={scrollToCenter} variant="outline">
-                Scroll to center
-              </Button>
-              <Button onClick={scrollToTop} variant="outline">
-                Scroll to top
-              </Button>
-            </Group>
           </Stack>
         </ScrollArea>
       </Flex>
@@ -369,3 +365,15 @@ const Create = () => {
 };
 
 export default Create;
+
+export async function getServerSideProps() {
+  const tags = await client.tag.findMany();
+  const category = await client.category.findMany();
+
+  return {
+    props: {
+      tags: tags.map((t) => ({ value: t.name, label: t.name })),
+      categories: category.map((c) => ({ value: c.name, label: c.name })),
+    },
+  };
+}

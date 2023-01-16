@@ -39,7 +39,6 @@ export const getServerSideProps: GetServerSideProps<{
     props: {
       data: serialize(data),
     },
-    revalidate: 60 * 60 * 24,
   };
 };
 

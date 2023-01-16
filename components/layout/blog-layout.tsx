@@ -1,5 +1,3 @@
-// import TopNav from "@components/navigation/top-nav";
-// make TopNav a dynamic import
 import dynamic from "next/dynamic";
 const TopNav = dynamic(() => import("@components/navigation/top-nav"));
 import { Box, Container, Space } from "@mantine/core";

@@ -10,16 +10,11 @@ export default async function handler(
 
   const token = await getToken({ req });
   const parsedData = body && JSON.parse(body);
-  // creates new blog for current user
   if (
     token &&
     method === "POST" &&
     (query.isDraft === undefined || query.isPublished === undefined)
   ) {
-    await client.tag.deleteMany({
-      where: { name: { in: parsedData.tags.map((t: any) => t.name) } },
-    });
-
     const blog = await client.blog.create({
       data: {
         title: parsedData.title,
@@ -29,21 +24,17 @@ export default async function handler(
         coverImage: parsedData.image,
         category: {
           connectOrCreate: {
-            where: { name: parsedData.category.name },
+            where: { name: parsedData.category },
             create: {
               name: parsedData.category,
-              description: parsedData.category.description,
             },
           },
         },
         tags: {
-          createMany: {
-            data: [
-              { description: "what ever", name: "test" },
-              { description: "what ever2", name: "test2" },
-            ],
-            skipDuplicates: true,
-          },
+          connectOrCreate: parsedData.tags.map((tag: string) => ({
+            where: { name: tag },
+            create: { name: tag },
+          })),
         },
         seo: {
           create: {
@@ -63,6 +54,11 @@ export default async function handler(
         author: { connect: { email: token?.email?.toString() } },
       },
     });
+
+    // const updateBlog = await client.blog.update({
+    //   where: { id: blog.id },
+    //   data: { tags: { connect: [{ name: "test" }] } },
+    // });
 
     return res.send(blog);
   }

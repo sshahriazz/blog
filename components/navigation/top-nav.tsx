@@ -31,6 +31,7 @@ import {
 } from "@tabler/icons";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import React from "react";
 import ToggleColorScheme from "../core/ToggleColorScheme";
 import ProfileDropdown from "../ProfileButton";
 
@@ -223,20 +224,6 @@ const TopNav = () => {
                   <SimpleGrid cols={2} spacing={0}>
                     {links}
                   </SimpleGrid>
-
-                  {/* <div className={classes.dropdownFooter}>
-                    <Group position="apart">
-                      <div>
-                        <Text weight={500} size="sm">
-                          Get started
-                        </Text>
-                        <Text size="xs" color="dimmed">
-                          Their food sources have decreased, and their numbers
-                        </Text>
-                      </div>
-                      <Button variant="default">Get started</Button>
-                    </Group>
-                  </div> */}
                 </HoverCard.Dropdown>
               </HoverCard>
               <a href="#" className={classes.link}>
@@ -378,4 +365,4 @@ const TopNav = () => {
     </Box>
   );
 };
-export default TopNav;
+export default React.memo(TopNav);
