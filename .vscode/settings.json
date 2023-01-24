@@ -23,7 +23,14 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "eslint.options": {
-    "extensions": [".js", ".jsx", ".md", ".mdx", ".ts", ".tsx"]
+    "extensions": [
+      ".js",
+      ".jsx",
+      ".md",
+      ".mdx",
+      ".ts",
+      ".tsx"
+    ]
   },
   "eslint.validate": [
     "javascript",
@@ -37,7 +44,8 @@
     "source.fixAll.eslint": true
   },
   "eslint.runtime": "node",
-
   "typescript.workspaceSymbols.scope": "currentProject",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

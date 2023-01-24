@@ -1,3 +1,4 @@
+import { NextSeo } from "next-seo";
 import dynamic from "next/dynamic";
 const FeaturesGrid = dynamic(() =>
   import("@components/home/Features").then((mod) => mod.FeaturesGrid)
@@ -7,9 +8,7 @@ const HeroBullets = dynamic(() =>
 );
 const HomeLayout = dynamic(() => import("@components/layout/home-layout"));
 
-import { NextSeo } from "next-seo";
-
-export default function IndexPage() {
+export default function Page() {
   return (
     <>
       <NextSeo

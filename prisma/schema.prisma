@@ -93,15 +93,13 @@ enum Role {
 
 model Blog {
     id          String  @id @default(cuid())
-    seo         Seo?
     title       String
     coverImage  String?
     content     String
     isDraft     Boolean @default(true)
     isPublished Boolean @default(false)
 
-    category Category?
-    tags     Tag[]
+    tags Tag[]
 
     comments Comment[]
 
@@ -130,52 +128,11 @@ model Comment {
     updatedAt DateTime @updatedAt
 }
 
-model Category {
-    id   String @id @default(cuid())
-    name String @unique
-
-    blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId String @unique
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 model Tag {
-    id   String @id @default(cuid())
-    name String @unique
-    Blog Blog[]
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-model Seo {
-    id              String       @id @default(cuid())
-    metaTitle       String
-    metaDescription String
-    metaImage       String
-    metaSocial      MetaSocial[]
-    keywords        String[]
-    structuredData  Json
-    metaRobots      String
-    metaViewPort    String
-    canonicalURL    String
-    blog            Blog         @relation(fields: [blogId], references: [id], onDelete: Cascade)
-    blogId          String       @unique
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-model MetaSocial {
-    id            String  @id @default(cuid())
-    title         String
-    description   String
-    image         String
-    socialNetwork String
-    Seo           Seo?    @relation(fields: [seoId], references: [id], onDelete: Cascade)
-    seoId         String?
+    id          String  @id @default(cuid())
+    name        String  @unique
+    description String?
+    Blog        Blog[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

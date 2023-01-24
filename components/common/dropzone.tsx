@@ -95,6 +95,7 @@ const DropzoneButton = ({
       setShowDropzone(false);
     }
   }, [previews]);
+  console.log(files, "files");
 
   return (
     <Box className={classes.wrapper}>
@@ -107,7 +108,7 @@ const DropzoneButton = ({
               const imageUrl = URL.createObjectURL(e[0]);
               setFiles(e);
 
-              form.setFieldValue(dataLocation, imageUrl);
+              form.setFieldValue(dataLocation, e[0]);
             }}
             className={classes.dropzone}
             radius="md"
