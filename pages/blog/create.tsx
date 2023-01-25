@@ -31,7 +31,7 @@ const Create = (props: any) => {
   const [content] = useAtom(contentAtom);
   const [showPreview, setShowPreview] = useState(false);
   const [data, setData] = useState(
-    props.tags.map((t) => ({
+    props.tags.map((t: { value: string; label: string }) => ({
       value: "#" + t?.value,
       label: "#" + t?.label,
     })) || []

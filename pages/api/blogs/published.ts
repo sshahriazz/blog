@@ -27,8 +27,8 @@ export default async function handler(
       },
     });
 
-    return res.send(publishedPost);
+    return res.status(200).send(publishedPost);
   }
 
-  return res.send({ status: 404, message: "bad request" });
+  return res.status(404).send({ message: "bad request" });
 }

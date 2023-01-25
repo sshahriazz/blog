@@ -186,7 +186,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
           name: true,
         },
       },
-      seo: { include: { metaSocial: true } },
       coverImage: true,
       title: true,
       content: true,

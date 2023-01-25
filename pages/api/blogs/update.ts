@@ -14,7 +14,6 @@ export default async function handler(
   if (token && method === "POST") {
     const findBlog = await client.blog.findUnique({
       where: { id: query.id as string },
-      include: { seo: { include: { metaSocial: true } } },
     });
 
     const blog = await client.blog.update({
@@ -27,31 +26,11 @@ export default async function handler(
         isDraft: parsedData.isDraft,
         isPublished: parsedData.isPublished,
         coverImage: parsedData.image,
-        seo: {
-          update: {
-            keywords: parsedData.seo.keywords,
-            canonicalURL: parsedData.seo.canonicalURL,
-            metaDescription: parsedData.seo.metaDescription,
-            metaImage: parsedData.seo.metaImage,
-            metaRobots: parsedData.seo.metaRobots,
-            metaTitle: parsedData.seo.metaTitle,
-            metaViewPort: parsedData.seo.metaViewPort,
-            structuredData: parsedData.seo.structuredData || {},
-            metaSocial: {
-              deleteMany: {
-                id: { in: findBlog?.seo?.metaSocial.map(({ id }) => id) },
-              },
-              createMany: {
-                data: parsedData.seo.metaSocial,
-              },
-            },
-          },
-        },
       },
     });
 
-    return res.send(blog);
+    return res.status(200).send(blog);
   }
 
-  return res.send({ status: 404, message: "bad request" });
+  return res.status(404).send({ message: "bad request" });
 }

@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: { appDir: true },
   images: {
     domains: ["avatars.githubusercontent.com"],
   },
@@ -10,6 +9,10 @@ const nextConfig = {
   modularizeImports: {
     "@mantine/core": {
       transform: "@mantine/core",
+      skipDefaultConversion: true,
+    },
+    "@mantine/tiptap": {
+      transform: "@mantine/tiptap",
       skipDefaultConversion: true,
     },
     "@tabler/icons": {

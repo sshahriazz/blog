@@ -12,8 +12,8 @@ export default async function handler(
   if (token && method === "GET") {
     const blogTags = await client.tag.findMany();
 
-    return res.send(blogTags);
+    return res.status(200).send(blogTags);
   }
 
-  return res.send({ status: 404, message: "bad request" });
+  return res.status(404).send({ message: "bad request" });
 }
