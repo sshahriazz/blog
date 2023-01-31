@@ -36,7 +36,6 @@ const Create = (props: any) => {
       label: "#" + t?.label,
     })) || []
   );
-  console.log(props.tags.map((t: string) => "#" + t));
 
   const form = useForm({
     initialValues: {
@@ -68,12 +67,13 @@ const Create = (props: any) => {
 
     if (!error.hasErrors) {
       formData.append("image", form.values.image!);
+
       formData.append("title", form.values.title);
       formData.append("content", form.values.content);
       formData.append("isPublished", form.values.isPublished.toString());
       formData.append("isDraft", form.values.isDraft.toString());
       formData.append("tags", JSON.stringify(form.values.tags));
-      await fetch("/api/blogs/blog", {
+      await fetch("/api/upload", {
         method: "POST",
 
         body: formData,
@@ -94,7 +94,7 @@ const Create = (props: any) => {
     form.setFieldValue("isPublished", false);
     form.setFieldValue("isDraft", true);
     if (!error.hasErrors) {
-      await fetch("/api/blogs/blog", {
+      await fetch("/api/upload", {
         method: "POST",
         body: JSON.stringify(form.values),
       }).then(async (res) => {

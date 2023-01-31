@@ -4,19 +4,12 @@ const PasswordStrength = dynamic(() =>
 );
 
 import {
-  FacebookButton,
-  GithubButton,
-  GoogleButton,
-  TwitterButton,
-} from "@components/social-button/SocialButton";
-import {
   Anchor,
   Box,
   Button,
   createStyles,
   Divider,
   Paper,
-  Stack,
   Text,
   TextInput,
   Title,
@@ -25,6 +18,7 @@ import { useForm } from "@mantine/form";
 import { CtxOrReq } from "next-auth/client/_utils";
 import { getCsrfToken, getProviders, signIn } from "next-auth/react";
 import Link from "next/link";
+const SocialProvider = dynamic(() => import("@components/auth/SocialProvider"));
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -142,48 +136,7 @@ export default function SignIn({
           labelPosition="center"
           my="lg"
         />
-        <Stack mb="md" mt="md">
-          {Object.values(providers).map(
-            (provider) =>
-              provider.name !== "Credentials" && (
-                <Box key={provider.name}>
-                  {provider.name === "Google" ? (
-                    <GoogleButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </GoogleButton>
-                  ) : provider.name === "Facebook" ? (
-                    <FacebookButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </FacebookButton>
-                  ) : provider.name === "GitHub" ? (
-                    <GithubButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </GithubButton>
-                  ) : (
-                    <TwitterButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </TwitterButton>
-                  )}
-                </Box>
-              )
-          )}
-        </Stack>
+        <SocialProvider providers={providers} handleSignIn={handleSignIn} />
       </Paper>
     </Box>
   );
