@@ -4,13 +4,12 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GithubProvider from "next-auth/providers/github";
 import TwitterProvider from "next-auth/providers/twitter";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "../../../lib/prismadb";
 import CredentialsProvider from "next-auth/providers/credentials";
-import client from "../../../lib/prismadb";
+import client from "@lib/prismadb";
 import { compare } from "bcryptjs";
 
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(client),
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
@@ -34,10 +33,13 @@ export const authOptions = {
         //Connect to DB
 
         //Get all the users
-        const result = await client.user.findUnique({
-          where: { email: credentials?.email },
-        });
-        //Find user with the email
+        const result = await client.user
+          .findUnique({
+            where: { email: credentials?.email },
+          })
+          .catch((err) => {
+            throw new Error("User error, contact admin");
+          });
 
         //Not found - send error res
         if (!result) {

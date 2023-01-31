@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 const PasswordStrength = dynamic(() =>
   import("@components/form/PasswordField").then((mod) => mod.PasswordStrength)
 );
-
+const SocialProvider = dynamic(() => import("@components/auth/SocialProvider"));
 const FacebookButton = dynamic(() =>
   import("@components/social-button/SocialButton").then(
     (mod) => mod.FacebookButton
@@ -31,7 +31,6 @@ import {
   Divider,
   Loader,
   Paper,
-  Stack,
   Text,
   TextInput,
   Title,
@@ -108,9 +107,6 @@ export default function SignIn({
           : "Invalid username",
     },
   });
-  const handleSignIn = (provider: string) => {
-    signIn(provider, { callbackUrl: `${window.location.origin}/` });
-  };
 
   const handleCredentialsSignIn = (
     email: string,
@@ -242,48 +238,7 @@ export default function SignIn({
           labelPosition="center"
           my="md"
         />
-        <Stack mb="md" mt="md">
-          {Object.values(providers).map(
-            (provider) =>
-              provider.name !== "Credentials" && (
-                <Box key={provider.name}>
-                  {provider.name === "Google" ? (
-                    <GoogleButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </GoogleButton>
-                  ) : provider.name === "Facebook" ? (
-                    <FacebookButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </FacebookButton>
-                  ) : provider.name === "GitHub" ? (
-                    <GithubButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </GithubButton>
-                  ) : (
-                    <TwitterButton
-                      w={"100%"}
-                      onClick={() => handleSignIn(provider.id)}
-                      radius="xl"
-                    >
-                      {provider.name}
-                    </TwitterButton>
-                  )}
-                </Box>
-              )
-          )}
-        </Stack>
+        <SocialProvider providers={providers} handleSignIn={handleSignup} />
       </Paper>
     </Box>
   );

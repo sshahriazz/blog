@@ -30,6 +30,7 @@ import React, { useState } from "react";
 const DisplayContent = dynamic(() => import("@components/DisplayContent"));
 const UserInfoCard = dynamic(() => import("@components/user/UserInfoCard"));
 import client from "../../lib/prismadb";
+import { Tag } from "@prisma/client";
 
 const user = {
   image:
@@ -147,10 +148,9 @@ const SingleBlog = ({ post }: { post: any }) => {
 
           <Title order={1}>{post?.title}</Title>
           <Group mt={8} mb={32}>
-            <Badge>Tags</Badge>
-            <Badge>Tags</Badge>
-            <Badge>Tags</Badge>
-            <Badge>Tags</Badge>
+            {post?.tags.map((tag: Tag) => (
+              <Badge key={tag.name}>#{tag.name}</Badge>
+            ))}
           </Group>
           <DisplayContent content={post?.content} />
         </Grid.Col>
@@ -184,6 +184,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
           image: true,
           email: true,
           name: true,
+        },
+      },
+      tags: {
+        select: {
+          name: true,
+          description: true,
         },
       },
       coverImage: true,
