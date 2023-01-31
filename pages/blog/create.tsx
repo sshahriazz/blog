@@ -26,8 +26,6 @@ const PreviewContent = dynamic(() => import("@components/PreviewContent"));
 const BlogLayout = dynamic(() => import("@components/layout/blog-layout"));
 
 const Create = (props: any) => {
-  console.log(props.tags);
-
   const [content] = useAtom(contentAtom);
   const [showPreview, setShowPreview] = useState(false);
   const [data, setData] = useState(
@@ -51,7 +49,6 @@ const Create = (props: any) => {
       title: (value) => (value.length <= 1 ? "Required" : null),
     },
   });
-  console.log(form.values);
 
   const { push } = useRouter();
   useMemo(() => {
@@ -67,26 +64,26 @@ const Create = (props: any) => {
 
     if (!error.hasErrors) {
       formData.append("image", form.values.image!);
+      formData.append("namr", "fdfddfdffd");
 
-      formData.append("title", form.values.title);
-      formData.append("content", form.values.content);
-      formData.append("isPublished", form.values.isPublished.toString());
-      formData.append("isDraft", form.values.isDraft.toString());
-      formData.append("tags", JSON.stringify(form.values.tags));
       await fetch("/api/upload", {
         method: "POST",
 
         body: formData,
-      }).then(async (res) => {
-        if (res.status === 200) {
-          console.log("blog created");
-          // push(`/blog/my-blogs`);
-          showNotification({
-            title: "Blog Created",
-            message: "Your blog has been created and published successfully",
-          });
-        }
-      });
+      })
+        .then(async (res) => {
+          if (res.status === 200) {
+            console.log("blog created");
+            // push(`/blog/my-blogs`);
+            showNotification({
+              title: "Blog Created",
+              message: "Your blog has been created and published successfully",
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
   async function createDraftBlog() {
@@ -128,7 +125,7 @@ const Create = (props: any) => {
             Preview Blog
           </Button>
           <Button onClick={publishBlog}>Publish Blog</Button>
-          <Button onClick={createDraftBlog}>Create Draft</Button>
+          {/* <Button onClick={createDraftBlog}>Create Draft</Button> */}
         </Flex>
       </Flex>
       <Flex gap={"md"}>

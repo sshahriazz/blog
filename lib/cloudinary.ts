@@ -1,13 +1,17 @@
-const cloudinary = require("cloudinary");
+import cloudinary, { UploadApiResponse } from "cloudinary";
 
 cloudinary.v2.config({
-  secure: true,
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 /////////////////////////
 // Uploads an image file
 /////////////////////////
-const uploadImage = async (imagePath: any) => {
+export const uploadImage = async (
+  imagePath: any
+): Promise<UploadApiResponse | undefined> => {
   // Use the uploaded file's name as the asset's public ID and
   // allow overwriting the asset with new versions
   const options = {
@@ -18,13 +22,11 @@ const uploadImage = async (imagePath: any) => {
 
   try {
     // Upload the image
-    const result = await cloudinary.uploader.upload(imagePath, options);
-    console.log(result);
+    const result = await cloudinary.v2.uploader.upload(imagePath, options);
 
-    return result.public_id;
+    return result;
   } catch (error) {
     console.error(error);
   }
 };
-
-export default uploadImage;
+export default cloudinary;

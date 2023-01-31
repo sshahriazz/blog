@@ -1,3 +1,4 @@
+import { trpc } from "@utils/trpc";
 import { NextSeo } from "next-seo";
 import dynamic from "next/dynamic";
 const FeaturesGrid = dynamic(() =>
@@ -9,8 +10,15 @@ const HeroBullets = dynamic(() =>
 const HomeLayout = dynamic(() => import("@components/layout/home-layout"));
 
 export default function Page() {
+  const { isLoading, error, data } = trpc.healthCheck.useQuery();
+  console.log(error, data);
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
+      <div>{data}</div>
       <NextSeo
         title="Welcome - Home"
         description="Home page fo the blog site"

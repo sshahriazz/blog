@@ -6,6 +6,7 @@ import { GetServerSidePropsContext } from "next";
 import { theme } from "../utils/theme";
 import { DefaultSeo } from "next-seo";
 import dynamic from "next/dynamic";
+import { trpc } from "@utils/trpc";
 
 const SessionProvider = dynamic(() =>
   import("next-auth/react").then((mod) => mod.SessionProvider)
@@ -23,9 +24,7 @@ const ColorSchemeProvider = dynamic(() =>
   import("@mantine/core").then((mod) => mod.ColorSchemeProvider)
 );
 
-export default function App(
-  props: AppProps & { colorScheme: ColorScheme; session: any }
-) {
+function App(props: AppProps & { colorScheme: ColorScheme; session: any }) {
   const { Component, pageProps, session } = props;
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
     props.colorScheme
@@ -80,3 +79,4 @@ export default function App(
 App.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
   colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
 });
+export default trpc.withTRPC(App);

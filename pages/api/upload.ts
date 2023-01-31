@@ -1,42 +1,59 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import cloudinary from "cloudinary";
-import formidable from "formidable";
-cloudinary.v2.config({
-  cloud_name: "sample",
-  api_key: "874837483274837",
-  api_secret: "a676b67565c6767a6767d6767f676fe1",
-  secure: true,
-});
+import { uploadImage } from "@lib/cloudinary";
+import { FormidableError, parseForm } from "@lib/parseForm";
+import { UploadApiResponse } from "cloudinary";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-const upload = async (req: NextApiRequest, res: NextApiResponse) => {
-  // console.log(req);
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<{
+    data: {
+      url: string;
+    } | null;
+    error: string | null;
+  }>
+) => {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    res.status(405).json({
+      data: null,
+      error: "Method Not Allowed",
+    });
 
-  const form = formidable({
-    multiples: true,
-    uploadDir: "./public",
-  });
+    return;
+  }
+  // Just after the "Method Not Allowed" code
+  try {
+    const { fields, files } = await parseForm(req);
 
-  form.parse(req, async (err, fields, files) => {
-    if (files) {
-      const image = await cloudinary.v2.uploader.upload("", {
-        resource_type: "image",
-        public_id: `users/${files.name}`,
-        crop: "scale",
-        quality: "auto",
-      });
+    const file = files.image;
+    const url = Array.isArray(file)
+      ? file.map((f) => f.filepath)
+      : file.filepath;
 
-      return res.send({ image: image.secure_url });
+    const uploadResponse: UploadApiResponse | undefined = await uploadImage(
+      url as string
+    );
+
+    res.status(200).json({
+      data: {
+        url: uploadResponse!.secure_url,
+      },
+      error: null,
+    });
+  } catch (e) {
+    if (e instanceof FormidableError) {
+      res.status(e.httpCode || 400).json({ data: null, error: e.message });
     } else {
-      return;
+      console.error(e);
+      res.status(500).json({ data: null, error: "Internal Server Error" });
     }
-  });
+  }
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  return req.method === "POST"
-    ? await upload(req, res)
-    : res.status(404).send({ message: "bad request" });
-}
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default handler;
