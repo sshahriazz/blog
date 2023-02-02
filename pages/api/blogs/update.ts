@@ -23,9 +23,8 @@ export default async function handler(
       data: {
         title: parsedData.title,
         content: parsedData.content,
-        isDraft: parsedData.isDraft,
-        isPublished: parsedData.isPublished,
-        coverImage: parsedData.image,
+        published: parsedData.published,
+        cover: parsedData.cover,
       },
     });
 
