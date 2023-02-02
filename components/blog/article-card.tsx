@@ -43,18 +43,17 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function ArticleCardVertical({
-  coverImage,
+  cover,
   title,
   id,
-  isDraft,
-  isPublished,
+  published,
   author,
 }: BlogUser) {
   const { classes } = useStyles();
 
   return (
     <Card withBorder radius="md" p={0} className={classes.card}>
-      {isPublished && !author && (
+      {published && !author && (
         <Badge
           className={classes.rating}
           variant="gradient"
@@ -63,7 +62,7 @@ export function ArticleCardVertical({
           published
         </Badge>
       )}
-      {isDraft && !author && (
+      {!published && !author && (
         <Badge
           className={classes.rating}
           variant="gradient"
@@ -74,7 +73,7 @@ export function ArticleCardVertical({
       )}
 
       <Group noWrap spacing={0}>
-        <Image src={coverImage} height={140} alt="test" width={140} />
+        <Image src={cover} height={140} alt="test" width={140} />
         <div className={classes.body}>
           <Text transform="uppercase" color="dimmed" weight={700} size="xs">
             {/* {category} */}Category

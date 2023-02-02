@@ -21,7 +21,7 @@ export default async function handler(
               name: true,
             },
           },
-          coverImage: true,
+          cover: true,
           id: true,
           title: true,
         },

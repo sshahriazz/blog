@@ -192,7 +192,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
           description: true,
         },
       },
-      coverImage: true,
+      cover: true,
       title: true,
       content: true,
     },

@@ -12,7 +12,7 @@ export default async function handler(
 
   if (token && method === "GET") {
     const publishedPost = await client.blog.findMany({
-      where: { isPublished: true },
+      where: { published: true },
       select: {
         author: {
           select: {
@@ -21,7 +21,7 @@ export default async function handler(
             name: true,
           },
         },
-        coverImage: true,
+        cover: true,
         id: true,
         title: true,
       },

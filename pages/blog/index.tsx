@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<{
   data: any;
 }> = async () => {
   const data = await client.blog.findMany({
-    where: { isPublished: true },
+    where: { published: true },
     include: { author: true },
     orderBy: {
       createdAt: "asc",

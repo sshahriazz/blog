@@ -36,10 +36,9 @@ const Page = ({ data }: { data: BlogType }) => {
   const form = useForm({
     initialValues: {
       title: data.title,
-      image: data.coverImage,
+      image: data.cover,
       content: data.content.toString(),
-      isDraft: data.isDraft,
-      isPublished: data.isPublished,
+      published: data.cover,
     },
     validateInputOnChange: true,
     validate: {
@@ -49,7 +48,7 @@ const Page = ({ data }: { data: BlogType }) => {
 
   useMemo(() => {
     form.setFieldValue("content", updatedContent);
-    form.setFieldValue("isPublished", form.values.isDraft ? false : false);
+    form.setFieldValue("isPublished", form.values.published ? false : false);
   }, [updatedContent]);
 
   async function createBlog() {
@@ -83,20 +82,9 @@ const Page = ({ data }: { data: BlogType }) => {
         <Flex>
           <Switch
             labelPosition="left"
-            label="Keep it as draft"
-            size="md"
-            radius="sm"
-            disabled={form.values.isPublished}
-            defaultChecked={form.values.isDraft}
-            {...form.getInputProps("isDraft")}
-          />
-          <Switch
-            labelPosition="left"
-            disabled={form.values.isDraft}
             label="Publish Blog"
             size="md"
             radius="sm"
-            defaultChecked={form.values.isPublished}
             {...form.getInputProps("isPublished")}
           />
         </Flex>
