@@ -47,6 +47,8 @@ model VerificationToken {
 model User {
     id            String    @id @default(cuid())
     name          String?
+    firstName     String?
+    lastName      String?
     email         String?   @unique
     emailVerified DateTime?
     image         String?
@@ -78,7 +80,7 @@ model Follows {
 
 model Portfolio {
     id     String @id @default(cuid())
-    data   Json   @default("{}")
+    data   Json?
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String @unique
 
@@ -92,12 +94,11 @@ enum Role {
 }
 
 model Blog {
-    id          String  @id @default(cuid())
-    title       String
-    coverImage  String?
-    content     String
-    isDraft     Boolean @default(true)
-    isPublished Boolean @default(false)
+    id        String  @id @default(cuid())
+    title     String
+    cover     String?
+    content   String
+    published Boolean @default(false)
 
     tags Tag[]
 

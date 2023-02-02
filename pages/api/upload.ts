@@ -24,8 +24,9 @@ const handler = async (
   // Just after the "Method Not Allowed" code
   try {
     const { fields, files } = await parseForm(req);
+    console.log(fields, files, "fields, files");
 
-    const file = files.image;
+    const file = files.cover;
     const url = Array.isArray(file)
       ? file.map((f) => f.filepath)
       : file.filepath;

@@ -38,10 +38,9 @@ const Create = (props: any) => {
   const form = useForm({
     initialValues: {
       title: "",
-      image: null,
+      cover: null,
       content: "",
-      isDraft: true,
-      isPublished: false,
+      published: false,
       tags: [""],
     },
     validateInputOnChange: true,
@@ -56,15 +55,12 @@ const Create = (props: any) => {
   }, [content]);
 
   async function publishBlog() {
-    form.setFieldValue("isPublished", true);
-    form.setFieldValue("isDraft", false);
     const formData = new FormData();
-
+    const { cover, ...rest } = form.values;
     const error = form.validate();
 
     if (!error.hasErrors) {
-      formData.append("image", form.values.image!);
-      formData.append("namr", "fdfddfdffd");
+      formData.append("cover", form.values.cover!);
 
       await fetch("/api/upload", {
         method: "POST",
@@ -73,37 +69,36 @@ const Create = (props: any) => {
       })
         .then(async (res) => {
           if (res.status === 200) {
-            console.log("blog created");
-            // push(`/blog/my-blogs`);
-            showNotification({
-              title: "Blog Created",
-              message: "Your blog has been created and published successfully",
-            });
+            await fetch("/api/blog", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                ...rest,
+                cover: await res.json().then((res) => res.data.url),
+              }),
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                  showNotification({
+                    title: "Blog Created",
+                    message: "Your blog has been created as draft",
+                  });
+                }
+              })
+              .catch((err) => {
+                showNotification({
+                  title: "Blog Creation failed",
+                  message:
+                    "Your blog has been created and published successfully",
+                });
+              });
           }
         })
         .catch((err) => {
           console.log(err);
         });
-    }
-  }
-  async function createDraftBlog() {
-    const error = form.validate();
-    form.setFieldValue("isPublished", false);
-    form.setFieldValue("isDraft", true);
-    if (!error.hasErrors) {
-      await fetch("/api/upload", {
-        method: "POST",
-        body: JSON.stringify(form.values),
-      }).then(async (res) => {
-        if (res.status === 200) {
-          console.log("blog created");
-          // push(`/blog/my-blogs`);
-          showNotification({
-            title: "Blog Created",
-            message: "Your blog has been created as draft",
-          });
-        }
-      });
     }
   }
 
@@ -125,7 +120,6 @@ const Create = (props: any) => {
             Preview Blog
           </Button>
           <Button onClick={publishBlog}>Publish Blog</Button>
-          {/* <Button onClick={createDraftBlog}>Create Draft</Button> */}
         </Flex>
       </Flex>
       <Flex gap={"md"}>
@@ -133,7 +127,7 @@ const Create = (props: any) => {
           <DropzoneButton
             previewSize={{ height: 250, width: "100%" }}
             form={form}
-            dataLocation={`image`}
+            dataLocation={`cover`}
             description="select a banner image for your blog"
             fileType="jpeg or png"
             maxSize={30 * 1024 ** 2}
