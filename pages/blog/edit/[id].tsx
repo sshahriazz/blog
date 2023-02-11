@@ -6,13 +6,10 @@ import {
   Flex,
   Loader,
   Modal,
-  ScrollArea,
-  Stack,
   Switch,
-  Text,
   TextInput,
 } from "@mantine/core";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "@mantine/form";
 import { MIME_TYPES } from "@mantine/dropzone";
 const PreviewContent = dynamic(() => import("@components/PreviewContent"));
@@ -38,7 +35,7 @@ const Page = ({ data }: { data: BlogType }) => {
       title: data.title,
       image: data.cover,
       content: data.content.toString(),
-      published: data.cover,
+      published: data.published,
     },
     validateInputOnChange: true,
     validate: {
@@ -48,7 +45,6 @@ const Page = ({ data }: { data: BlogType }) => {
 
   useMemo(() => {
     form.setFieldValue("content", updatedContent);
-    form.setFieldValue("isPublished", form.values.published ? false : false);
   }, [updatedContent]);
 
   async function createBlog() {
@@ -61,10 +57,8 @@ const Page = ({ data }: { data: BlogType }) => {
         body: JSON.stringify(formData),
       });
       const json = await res.json();
-      console.log(json);
     }
   }
-  const viewport = useRef<HTMLDivElement>(null);
 
   return (
     <Container size={"xl"}>
@@ -85,7 +79,7 @@ const Page = ({ data }: { data: BlogType }) => {
             label="Publish Blog"
             size="md"
             radius="sm"
-            {...form.getInputProps("isPublished")}
+            {...form.getInputProps("published")}
           />
         </Flex>
         <Flex gap={"md"}>
@@ -96,67 +90,34 @@ const Page = ({ data }: { data: BlogType }) => {
           <Button>Delete Blog</Button>
         </Flex>
       </Flex>
-      <Flex gap={"md"}>
-        <Box sx={{ flex: 2 }}>
-          <DropzoneButton
-            previewSize={{ height: 250, width: "100%" }}
-            form={form}
-            dataLocation={`image`}
-            description="select a banner image for your blog"
-            fileType="jpeg or png"
-            maxSize={30 * 1024 ** 2}
-            message="your banner image"
-            mimeTypes={[MIME_TYPES.jpeg, MIME_TYPES.png]}
-          />
+      <Box sx={{ flex: 2 }}>
+        <DropzoneButton
+          previewLink={data.cover!}
+          previewSize={{ height: 250, width: "100%" }}
+          form={form}
+          dataLocation={`image`}
+          description="select a banner image for your blog"
+          fileType="jpeg or png"
+          maxSize={30 * 1024 ** 2}
+          message="your banner image"
+          mimeTypes={[MIME_TYPES.jpeg, MIME_TYPES.png]}
+        />
 
-          <TextInput
-            withAsterisk
-            label="Title"
-            placeholder="Title"
-            {...form.getInputProps("title")}
-          />
-          <TextInput
-            withAsterisk
-            hidden
-            label="Content"
-            placeholder="Content"
-            {...form.getInputProps("content")}
-          />
-          <EditRTE content={form.values.content} />
-        </Box>
-        <ScrollArea
-          style={{ height: "90vh" }}
-          viewportRef={viewport}
-          type="hover"
-          offsetScrollbars
-        >
-          <Stack sx={{ flex: 1 }}>
-            <Text>SEO</Text>
-            <TextInput
-              withAsterisk
-              label="Meta Title"
-              {...form.getInputProps("seo.metaTitle")}
-              placeholder="Title"
-            />
-            <TextInput
-              withAsterisk
-              {...form.getInputProps("seo.metaDescription")}
-              label="Meta Description"
-              placeholder="Description"
-            />
-            <DropzoneButton
-              previewSize={{ height: 200, width: "100%" }}
-              form={form}
-              dataLocation={`seo.metaImage`}
-              description="select a seo meta image for your blog"
-              fileType="jpeg or png"
-              maxSize={30 * 1024 ** 2}
-              message="your seo image"
-              mimeTypes={[MIME_TYPES.jpeg, MIME_TYPES.png]}
-            />
-          </Stack>
-        </ScrollArea>
-      </Flex>
+        <TextInput
+          withAsterisk
+          label="Title"
+          placeholder="Title"
+          {...form.getInputProps("title")}
+        />
+        <TextInput
+          withAsterisk
+          hidden
+          label="Content"
+          placeholder="Content"
+          {...form.getInputProps("content")}
+        />
+        <EditRTE content={form.values.content} />
+      </Box>
     </Container>
   );
 };

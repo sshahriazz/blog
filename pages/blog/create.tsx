@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic";
 import {
-  Box,
   Button,
+  Card,
   Flex,
   Loader,
-  Modal,
   MultiSelect,
+  Stack,
+  Text,
   TextInput,
 } from "@mantine/core";
 import { useAtom } from "jotai";
@@ -16,23 +17,22 @@ import { useRouter } from "next/router";
 import { MIME_TYPES } from "@mantine/dropzone";
 import client from "@lib/prismadb";
 import { showNotification } from "@mantine/notifications";
+import RichTextEditor from "@components/RichTextEditor";
+import AnimatedComponent from "@components/common/AnimatedComponent";
 
-const RTE = dynamic(() => import("@components/RTE"));
 const DropzoneButton = dynamic(() => import("@components/common/dropzone"), {
   ssr: false,
   loading: () => <Loader />,
 });
-const PreviewContent = dynamic(() => import("@components/PreviewContent"));
 const BlogLayout = dynamic(() => import("@components/layout/blog-layout"));
 
 const Create = (props: any) => {
   const [content] = useAtom(contentAtom);
-  const [showPreview, setShowPreview] = useState(false);
   const [data, setData] = useState(
     props.tags.map((t: { value: string; label: string }) => ({
-      value: "#" + t?.value,
-      label: "#" + t?.label,
-    })) || []
+      value: "#" + t?.value.replace("#", ""),
+      label: "#" + t?.label.replace("#", ""),
+    }))
   );
 
   const form = useForm({
@@ -52,6 +52,7 @@ const Create = (props: any) => {
   const { push } = useRouter();
   useMemo(() => {
     form.setFieldValue("content", content);
+    console.log(form.values.content);
   }, [content]);
 
   async function publishBlog() {
@@ -68,15 +69,16 @@ const Create = (props: any) => {
         body: formData,
       })
         .then(async (res) => {
+          const { data } = await res.json();
           if (res.status === 200) {
-            await fetch("/api/blog", {
+            await fetch("/api/blogs/blog", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
                 ...rest,
-                cover: await res.json().then((res) => res.data.url),
+                cover: data.url,
               }),
             })
               .then((res) => {
@@ -102,39 +104,41 @@ const Create = (props: any) => {
     }
   }
 
+  const [clickedElement, setClickedElement] = useState<HTMLDivElement | null>(
+    null
+  );
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    setClickedElement(event.currentTarget);
+  };
+
   return (
     <BlogLayout>
-      <Modal
-        fullScreen
-        centered
-        opened={showPreview}
-        onClose={() => setShowPreview((value) => !value)}
-      >
-        <p>{form.values.title}</p>
-        <PreviewContent />
-      </Modal>
-
-      <Flex justify={"end"}>
-        <Flex gap={"md"}>
-          <Button onClick={() => setShowPreview((value) => !value)}>
-            Preview Blog
-          </Button>
-          <Button onClick={publishBlog}>Publish Blog</Button>
-        </Flex>
-      </Flex>
-      <Flex gap={"md"}>
-        <Box sx={{ flex: 2 }}>
-          <DropzoneButton
-            previewSize={{ height: 250, width: "100%" }}
-            form={form}
-            dataLocation={`cover`}
-            description="select a banner image for your blog"
-            fileType="jpeg or png"
-            maxSize={30 * 1024 ** 2}
-            message="your banner image"
-            mimeTypes={[MIME_TYPES.jpeg, MIME_TYPES.png]}
-          />
-
+      <Stack maw={{ sm: "100%", md: "70%" }}>
+        <DropzoneButton
+          previewSize={{ height: 250, width: "100%" }}
+          form={form}
+          dataLocation={`cover`}
+          description="select a banner image for your blog"
+          fileType="jpeg or png"
+          maxSize={30 * 1024 ** 2}
+          message="your banner image"
+          mimeTypes={[MIME_TYPES.jpeg, MIME_TYPES.png]}
+        />
+        <Card
+          withBorder
+          shadow={"sm"}
+          display={{ sm: "none", md: "block" }}
+          sx={{
+            position: "fixed",
+            zIndex: 9999,
+            right: "26%",
+            top: 85,
+          }}
+        >
+          <Text>Test</Text>
+        </Card>
+        <div onClick={handleClick}>
           <TextInput
             fz={30}
             styles={{
@@ -144,7 +148,9 @@ const Create = (props: any) => {
             placeholder="Title"
             {...form.getInputProps("title")}
           />
+        </div>
 
+        <div onClick={handleClick}>
           <MultiSelect
             mt={16}
             styles={{
@@ -158,28 +164,39 @@ const Create = (props: any) => {
             creatable
             getCreateLabel={(query) => `+ Create ${query}`}
             onCreate={(query) => {
-              const item = { value: query, label: query };
-              setData((current: any) => [
-                ...current,
-                {
-                  label: "#" + item.label.replace("#", ""),
-                  value: "#" + item.value.replace("#", ""),
-                },
-              ]);
+              const item = { value: "#" + query, label: "#" + query };
+              setData((current: any) => [...current, item]);
 
               return item;
             }}
           />
-          <TextInput
-            withAsterisk
-            hidden
-            label="Content"
-            placeholder="Content"
-            {...form.getInputProps("content")}
-          />
-          <RTE />
-        </Box>
-      </Flex>
+        </div>
+        <TextInput
+          mt={"md"}
+          withAsterisk
+          hidden
+          placeholder="Content"
+          {...form.getInputProps("content")}
+        />
+        <div onClick={handleClick}>
+          <RichTextEditor />
+        </div>
+        <Card
+          withBorder
+          component={Flex}
+          align="center"
+          justify={"end"}
+          gap={3}
+          mt={"md"}
+        >
+          <Text>Saved as draft</Text>
+          <Flex gap={"md"}>
+            <Button onClick={publishBlog}>Publish Blog</Button>
+          </Flex>
+        </Card>
+      </Stack>
+
+      {clickedElement && <AnimatedComponent targetRef={clickedElement} />}
     </BlogLayout>
   );
 };

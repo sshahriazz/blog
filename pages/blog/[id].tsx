@@ -4,6 +4,7 @@ const UserInfo = dynamic(() => import("@components/common/user-info"));
 const BlogLayout = dynamic(() => import("@components/layout/blog-layout"));
 import {
   Badge,
+  Box,
   createStyles,
   Grid,
   Group,
@@ -31,6 +32,7 @@ const DisplayContent = dynamic(() => import("@components/DisplayContent"));
 const UserInfoCard = dynamic(() => import("@components/user/UserInfoCard"));
 import client from "../../lib/prismadb";
 import { Tag } from "@prisma/client";
+import { CommentSimple } from "@components/blog/Comment";
 
 const user = {
   image:
@@ -125,6 +127,7 @@ const SingleBlog = ({ post }: { post: any }) => {
       onClick={() => setActive(index)}
     />
   ));
+  console.log(post);
 
   return (
     <BlogLayout>
@@ -158,6 +161,9 @@ const SingleBlog = ({ post }: { post: any }) => {
           <UserInfoCard {...user} />
         </Grid.Col>
       </Grid>
+      <Box>
+        <CommentSimple />
+      </Box>
     </BlogLayout>
   );
 };

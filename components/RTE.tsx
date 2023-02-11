@@ -8,13 +8,13 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { useAtom } from "jotai";
 import { contentAtom } from "../store";
-import { useEffect } from "react";
+import React, { useMemo } from "react";
 import { Flex } from "@mantine/core";
 
 const content =
   '<h2 style="text-align: center;">Welcome to Mantine rich text editor</h2><p><code>RichTextEditor</code> component focuses on usability and is designed to be as simple as possible to bring a familiar editing experience to regular users. <code>RichTextEditor</code> is based on <a href="https://tiptap.dev/" rel="noopener noreferrer" target="_blank">Tiptap.dev</a> and supports all of its features:</p><ul><li>General text formatting: <strong>bold</strong>, <em>italic</em>, <u>underline</u>, <s>strike-through</s> </li><li>Headings (h1-h6)</li><li>Sub and super scripts (<sup>&lt;sup /&gt;</sup> and <sub>&lt;sub /&gt;</sub> tags)</li><li>Ordered and bullet lists</li><li>Text align&nbsp;</li><li>And all <a href="https://tiptap.dev/extensions" target="_blank" rel="noopener noreferrer">other extensions</a></li></ul>';
 
-export default function RTE() {
+function RTE() {
   const [content, setContent] = useAtom(contentAtom);
   const editor = useEditor({
     extensions: [
@@ -28,7 +28,7 @@ export default function RTE() {
     ],
     content,
   });
-  useEffect(() => {
+  useMemo(() => {
     if (!editor) {
       return undefined;
     }
@@ -128,3 +128,4 @@ export default function RTE() {
     </RichTextEditor>
   );
 }
+export default React.memo(RTE);

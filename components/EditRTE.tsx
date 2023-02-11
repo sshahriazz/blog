@@ -8,10 +8,9 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { useAtom } from "jotai";
 import { contentAtom } from "@store/index";
-import { useEffect } from "react";
-// import BubbleMenu from "@tiptap/extension-bubble-menu";
+import React, { useMemo } from "react";
 
-export default function EditRTE({ content }: { content: string }) {
+function EditRTE({ content }: { content: string }) {
   const [, setContent] = useAtom(contentAtom);
   const editor = useEditor({
     extensions: [
@@ -29,7 +28,7 @@ export default function EditRTE({ content }: { content: string }) {
     content,
   });
 
-  useEffect(() => {
+  useMemo(() => {
     if (!editor) {
       return undefined;
     }
@@ -97,3 +96,4 @@ export default function EditRTE({ content }: { content: string }) {
     </>
   );
 }
+export default React.memo(EditRTE);

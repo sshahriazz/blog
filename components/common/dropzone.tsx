@@ -47,6 +47,7 @@ const DropzoneButton = ({
   form,
   dataLocation,
   previewSize,
+  previewLink,
 }: {
   description: string;
   fileType: string;
@@ -56,6 +57,7 @@ const DropzoneButton = ({
   form: any;
   dataLocation: string;
   previewSize: { height: number | string; width: number | string };
+  previewLink?: string;
 }) => {
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const { classes, theme } = useStyles();
@@ -71,7 +73,7 @@ const DropzoneButton = ({
           alt="crap"
           width={previewSize.width}
           height={previewSize.height}
-          src={imageUrl}
+          src={previewLink ? previewLink : imageUrl}
           imageProps={{
             onLoad: () => {
               URL.revokeObjectURL(imageUrl);
@@ -91,15 +93,34 @@ const DropzoneButton = ({
   });
 
   useEffect(() => {
-    if (previews.length > 0) {
+    if (previews.length > 0 || previewLink?.length! > 0) {
       setShowDropzone(false);
     }
-  }, [previews]);
-  console.log(files, "files");
+  }, [previews, previewLink]);
 
   return (
     <Box className={classes.wrapper}>
-      {!showDropzone && <Box>{previews}</Box>}
+      {!showDropzone && previewLink?.length! > 1 ? (
+        <Stack>
+          <Image
+            fit="cover"
+            alt="crap"
+            width={previewSize.width}
+            height={previewSize.height}
+            src={previewLink}
+          />
+          <Button
+            onClick={() => {
+              setFiles([]);
+              setShowDropzone(true);
+            }}
+          >
+            Remove
+          </Button>
+        </Stack>
+      ) : (
+        <Box>{previews}</Box>
+      )}
       {showDropzone && (
         <>
           <Dropzone
